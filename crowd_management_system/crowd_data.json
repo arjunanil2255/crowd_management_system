@@ -1,0 +1,118 @@
+{"timestamp": "2026-01-13 10:13:25", "location": "Canteen", "count": 3, "max_capacity": 30, "occupancy_percent": 10.0, "status": "Empty"}
+{"timestamp": "2026-01-13 10:13:30", "location": "Canteen", "count": 3, "max_capacity": 30, "occupancy_percent": 10.0, "status": "Empty"}
+{"timestamp": "2026-01-13 10:13:35", "location": "Canteen", "count": 3, "max_capacity": 30, "occupancy_percent": 10.0, "status": "Empty"}
+{"timestamp": "2026-01-13 10:13:40", "location": "Canteen", "count": 3, "max_capacity": 30, "occupancy_percent": 10.0, "status": "Empty"}
+{"timestamp": "2026-01-13 10:13:45", "location": "Canteen", "count": 3, "max_capacity": 30, "occupancy_percent": 10.0, "status": "Empty"}
+{"timestamp": "2026-01-13 10:13:50", "location": "Canteen", "count": 3, "max_capacity": 30, "occupancy_percent": 10.0, "status": "Empty"}
+{"timestamp": "2026-01-13 10:13:55", "location": "Canteen", "count": 3, "max_capacity": 30, "occupancy_percent": 10.0, "status": "Empty"}
+{"timestamp": "2026-01-13 10:14:01", "location": "Canteen", "count": 3, "max_capacity": 3, "occupancy_percent": 100.0, "status": "Full"}
+{"timestamp": "2026-01-13 10:14:05", "location": "Canteen", "count": 3, "max_capacity": 3, "occupancy_percent": 100.0, "status": "Full"}
+{"timestamp": "2026-01-13 10:14:10", "location": "Canteen", "count": 3, "max_capacity": 3, "occupancy_percent": 100.0, "status": "Full"}
+{"timestamp": "2026-01-13 10:14:16", "location": "Canteen", "count": 4, "max_capacity": 3, "occupancy_percent": 133.3, "status": "Full"}
+{"timestamp": "2026-01-13 10:14:21", "location": "Canteen", "count": 3, "max_capacity": 3, "occupancy_percent": 100.0, "status": "Full"}
+{"timestamp": "2026-01-13 10:14:26", "location": "Canteen", "count": 3, "max_capacity": 3, "occupancy_percent": 100.0, "status": "Full"}
+{"timestamp": "2026-01-13 10:14:31", "location": "Canteen", "count": 3, "max_capacity": 3, "occupancy_percent": 100.0, "status": "Full"}
+{"timestamp": "2026-01-13 10:14:36", "location": "Canteen", "count": 3, "max_capacity": 3, "occupancy_percent": 100.0, "status": "Full"}
+{"timestamp": "2026-01-13 10:14:41", "location": "Canteen", "count": 3, "max_capacity": 3, "occupancy_percent": 100.0, "status": "Full"}
+{"timestamp": "2026-01-13 10:14:46", "location": "Canteen", "count": 3, "max_capacity": 3, "occupancy_percent": 100.0, "status": "Full"}
+{"timestamp": "2026-01-13 10:14:51", "location": "Canteen", "count": 3, "max_capacity": 3, "occupancy_percent": 100.0, "status": "Full"}
+{"timestamp": "2026-01-13 10:14:56", "location": "Canteen", "count": 3, "max_capacity": 3, "occupancy_percent": 100.0, "status": "Full"}
+{"timestamp": "2026-01-13 10:15:01", "location": "Canteen", "count": 3, "max_capacity": 3, "occupancy_percent": 100.0, "status": "Full"}
+{"timestamp": "2026-01-13 10:15:06", "location": "Canteen", "count": 3, "max_capacity": 3, "occupancy_percent": 100.0, "status": "Full"}
+{"timestamp": "2026-01-13 10:15:11", "location": "Canteen", "count": 3, "max_capacity": 3, "occupancy_percent": 100.0, "status": "Full"}
+{"timestamp": "2026-01-13 10:15:16", "location": "Canteen", "count": 3, "max_capacity": 3, "occupancy_percent": 100.0, "status": "Full"}
+{"timestamp": "2026-01-13 10:15:21", "location": "Canteen", "count": 3, "max_capacity": 3, "occupancy_percent": 100.0, "status": "Full"}
+{"timestamp": "2026-01-13 10:15:26", "location": "Canteen", "count": 3, "max_capacity": 3, "occupancy_percent": 100.0, "status": "Full"}
+{"timestamp": "2026-01-13 10:15:31", "location": "Canteen", "count": 3, "max_capacity": 3, "occupancy_percent": 100.0, "status": "Full"}
+{"timestamp": "2026-01-13 10:15:36", "location": "Canteen", "count": 3, "max_capacity": 3, "occupancy_percent": 100.0, "status": "Full"}
+{"timestamp": "2026-01-13 10:15:41", "location": "Canteen", "count": 3, "max_capacity": 3, "occupancy_percent": 100.0, "status": "Full"}
+{"timestamp": "2026-01-13 10:15:47", "location": "Canteen", "count": 4, "max_capacity": 3, "occupancy_percent": 133.3, "status": "Full"}
+{"timestamp": "2026-01-13 10:15:52", "location": "Canteen", "count": 3, "max_capacity": 3, "occupancy_percent": 100.0, "status": "Full"}
+{"timestamp": "2026-01-13 10:15:57", "location": "Canteen", "count": 3, "max_capacity": 3, "occupancy_percent": 100.0, "status": "Full"}
+{"timestamp": "2026-01-13 10:16:02", "location": "Canteen", "count": 6, "max_capacity": 3, "occupancy_percent": 200.0, "status": "Full"}
+{"timestamp": "2026-01-13 10:16:07", "location": "Canteen", "count": 8, "max_capacity": 3, "occupancy_percent": 266.7, "status": "Full"}
+{"timestamp": "2026-01-13 10:16:12", "location": "Canteen", "count": 8, "max_capacity": 30, "occupancy_percent": 26.7, "status": "Quarter Full"}
+{"timestamp": "2026-01-13 10:16:17", "location": "Canteen", "count": 8, "max_capacity": 30, "occupancy_percent": 26.7, "status": "Quarter Full"}
+{"timestamp": "2026-01-13 10:16:22", "location": "Canteen", "count": 8, "max_capacity": 30, "occupancy_percent": 26.7, "status": "Quarter Full"}
+{"timestamp": "2026-01-13 10:16:27", "location": "Canteen", "count": 7, "max_capacity": 30, "occupancy_percent": 23.3, "status": "Empty"}
+{"timestamp": "2026-01-13 10:16:32", "location": "Canteen", "count": 5, "max_capacity": 30, "occupancy_percent": 16.7, "status": "Empty"}
+{"timestamp": "2026-01-13 10:16:37", "location": "Canteen", "count": 2, "max_capacity": 30, "occupancy_percent": 6.7, "status": "Empty"}
+{"timestamp": "2026-01-13 10:16:42", "location": "Canteen", "count": 7, "max_capacity": 30, "occupancy_percent": 23.3, "status": "Empty"}
+{"timestamp": "2026-01-13 10:16:47", "location": "Canteen", "count": 0, "max_capacity": 30, "occupancy_percent": 0.0, "status": "Empty"}
+{"timestamp": "2026-01-13 10:16:52", "location": "Canteen", "count": 9, "max_capacity": 30, "occupancy_percent": 30.0, "status": "Quarter Full"}
+{"timestamp": "2026-01-13 10:16:57", "location": "Canteen", "count": 8, "max_capacity": 30, "occupancy_percent": 26.7, "status": "Quarter Full"}
+{"timestamp": "2026-01-13 10:17:03", "location": "Canteen", "count": 14, "max_capacity": 30, "occupancy_percent": 46.7, "status": "Quarter Full"}
+{"timestamp": "2026-01-13 10:17:08", "location": "Canteen", "count": 13, "max_capacity": 30, "occupancy_percent": 43.3, "status": "Quarter Full"}
+{"timestamp": "2026-01-13 10:17:13", "location": "Canteen", "count": 5, "max_capacity": 30, "occupancy_percent": 16.7, "status": "Empty"}
+{"timestamp": "2026-01-13 10:17:18", "location": "Canteen", "count": 8, "max_capacity": 30, "occupancy_percent": 26.7, "status": "Quarter Full"}
+{"timestamp": "2026-01-13 10:17:23", "location": "Canteen", "count": 5, "max_capacity": 12, "occupancy_percent": 41.7, "status": "Quarter Full"}
+{"timestamp": "2026-01-13 10:17:29", "location": "Canteen", "count": 7, "max_capacity": 12, "occupancy_percent": 58.3, "status": "Half Full"}
+{"timestamp": "2026-01-13 10:17:34", "location": "Canteen", "count": 8, "max_capacity": 12, "occupancy_percent": 66.7, "status": "Half Full"}
+{"timestamp": "2026-01-13 10:17:39", "location": "Canteen", "count": 10, "max_capacity": 12, "occupancy_percent": 83.3, "status": "Almost Full"}
+{"timestamp": "2026-01-13 10:17:44", "location": "Canteen", "count": 0, "max_capacity": 12, "occupancy_percent": 0.0, "status": "Empty"}
+{"timestamp": "2026-01-13 10:17:49", "location": "Canteen", "count": 3, "max_capacity": 12, "occupancy_percent": 25.0, "status": "Quarter Full"}
+{"timestamp": "2026-01-13 10:17:54", "location": "Canteen", "count": 3, "max_capacity": 12, "occupancy_percent": 25.0, "status": "Quarter Full"}
+{"timestamp": "2026-01-13 10:17:59", "location": "Canteen", "count": 3, "max_capacity": 12, "occupancy_percent": 25.0, "status": "Quarter Full"}
+{"timestamp": "2026-01-14 10:04:31", "location": "Canteen", "count": 0, "max_capacity": 12, "occupancy_percent": 0.0, "status": "Empty"}
+{"timestamp": "2026-01-14 10:04:36", "location": "Canteen", "count": 0, "max_capacity": 12, "occupancy_percent": 0.0, "status": "Empty"}
+{"timestamp": "2026-01-14 10:04:41", "location": "Canteen", "count": 3, "max_capacity": 12, "occupancy_percent": 25.0, "status": "Quarter Full"}
+{"timestamp": "2026-01-14 10:04:46", "location": "Canteen", "count": 3, "max_capacity": 12, "occupancy_percent": 25.0, "status": "Quarter Full"}
+{"timestamp": "2026-01-14 10:04:51", "location": "Canteen", "count": 3, "max_capacity": 12, "occupancy_percent": 25.0, "status": "Quarter Full"}
+{"timestamp": "2026-01-14 10:04:57", "location": "Canteen", "count": 3, "max_capacity": 12, "occupancy_percent": 25.0, "status": "Quarter Full"}
+{"timestamp": "2026-01-14 10:05:02", "location": "Canteen", "count": 3, "max_capacity": 12, "occupancy_percent": 25.0, "status": "Quarter Full"}
+{"timestamp": "2026-01-14 10:05:07", "location": "Canteen", "count": 3, "max_capacity": 3, "occupancy_percent": 100.0, "status": "Full"}
+{"timestamp": "2026-01-14 10:05:12", "location": "Canteen", "count": 4, "max_capacity": 3, "occupancy_percent": 133.3, "status": "Full"}
+{"timestamp": "2026-01-16 15:10:59", "location": "Canteen", "count": 0, "max_capacity": 30, "occupancy_percent": 0.0, "status": "Empty"}
+{"timestamp": "2026-01-16 15:11:04", "location": "Canteen", "count": 2, "max_capacity": 30, "occupancy_percent": 6.7, "status": "Empty"}
+{"timestamp": "2026-01-16 15:11:09", "location": "Canteen", "count": 3, "max_capacity": 30, "occupancy_percent": 10.0, "status": "Empty"}
+{"timestamp": "2026-01-16 15:11:14", "location": "Canteen", "count": 2, "max_capacity": 30, "occupancy_percent": 6.7, "status": "Empty"}
+{"timestamp": "2026-01-16 15:11:19", "location": "Canteen", "count": 2, "max_capacity": 30, "occupancy_percent": 6.7, "status": "Empty"}
+{"timestamp": "2026-01-16 15:11:24", "location": "Canteen", "count": 2, "max_capacity": 30, "occupancy_percent": 6.7, "status": "Empty"}
+{"timestamp": "2026-01-16 15:11:29", "location": "Canteen", "count": 2, "max_capacity": 30, "occupancy_percent": 6.7, "status": "Empty"}
+{"timestamp": "2026-01-16 15:11:34", "location": "Canteen", "count": 2, "max_capacity": 30, "occupancy_percent": 6.7, "status": "Empty"}
+{"timestamp": "2026-01-16 15:11:39", "location": "Canteen", "count": 2, "max_capacity": 30, "occupancy_percent": 6.7, "status": "Empty"}
+{"timestamp": "2026-01-16 15:11:44", "location": "Canteen", "count": 2, "max_capacity": 3, "occupancy_percent": 66.7, "status": "Half Full"}
+{"timestamp": "2026-01-16 15:11:49", "location": "Canteen", "count": 2, "max_capacity": 3, "occupancy_percent": 66.7, "status": "Half Full"}
+{"timestamp": "2026-01-16 15:11:54", "location": "Canteen", "count": 2, "max_capacity": 3, "occupancy_percent": 66.7, "status": "Half Full"}
+{"timestamp": "2026-01-16 15:11:59", "location": "Canteen", "count": 2, "max_capacity": 3, "occupancy_percent": 66.7, "status": "Half Full"}
+{"timestamp": "2026-01-16 15:12:04", "location": "Canteen", "count": 2, "max_capacity": 3, "occupancy_percent": 66.7, "status": "Half Full"}
+{"timestamp": "2026-01-16 15:12:09", "location": "Canteen", "count": 2, "max_capacity": 3, "occupancy_percent": 66.7, "status": "Half Full"}
+{"timestamp": "2026-01-16 15:12:14", "location": "Canteen", "count": 2, "max_capacity": 3, "occupancy_percent": 66.7, "status": "Half Full"}
+{"timestamp": "2026-01-16 15:12:19", "location": "Canteen", "count": 2, "max_capacity": 3, "occupancy_percent": 66.7, "status": "Half Full"}
+{"timestamp": "2026-01-16 15:12:24", "location": "Canteen", "count": 2, "max_capacity": 3, "occupancy_percent": 66.7, "status": "Half Full"}
+{"timestamp": "2026-01-16 15:12:29", "location": "Canteen", "count": 2, "max_capacity": 3, "occupancy_percent": 66.7, "status": "Half Full"}
+{"timestamp": "2026-01-16 15:12:34", "location": "Canteen", "count": 2, "max_capacity": 3, "occupancy_percent": 66.7, "status": "Half Full"}
+{"timestamp": "2026-01-16 15:12:39", "location": "Canteen", "count": 2, "max_capacity": 3, "occupancy_percent": 66.7, "status": "Half Full"}
+{"timestamp": "2026-01-16 15:12:44", "location": "Canteen", "count": 2, "max_capacity": 3, "occupancy_percent": 66.7, "status": "Half Full"}
+{"timestamp": "2026-01-16 15:12:49", "location": "Canteen", "count": 2, "max_capacity": 3, "occupancy_percent": 66.7, "status": "Half Full"}
+{"timestamp": "2026-01-16 15:12:54", "location": "Canteen", "count": 2, "max_capacity": 3, "occupancy_percent": 66.7, "status": "Half Full"}
+{"timestamp": "2026-01-16 15:12:59", "location": "Canteen", "count": 2, "max_capacity": 3, "occupancy_percent": 66.7, "status": "Half Full"}
+{"timestamp": "2026-01-16 15:13:04", "location": "Canteen", "count": 2, "max_capacity": 3, "occupancy_percent": 66.7, "status": "Half Full"}
+{"timestamp": "2026-01-16 15:13:09", "location": "Canteen", "count": 2, "max_capacity": 3, "occupancy_percent": 66.7, "status": "Half Full"}
+{"timestamp": "2026-01-16 15:13:14", "location": "Canteen", "count": 2, "max_capacity": 3, "occupancy_percent": 66.7, "status": "Half Full"}
+{"timestamp": "2026-01-16 15:13:19", "location": "Canteen", "count": 2, "max_capacity": 3, "occupancy_percent": 66.7, "status": "Half Full"}
+{"timestamp": "2026-01-16 15:13:24", "location": "Canteen", "count": 3, "max_capacity": 3, "occupancy_percent": 100.0, "status": "Full"}
+{"timestamp": "2026-01-16 15:13:29", "location": "Canteen", "count": 1, "max_capacity": 3, "occupancy_percent": 33.3, "status": "Quarter Full"}
+{"timestamp": "2026-01-16 15:13:34", "location": "Canteen", "count": 2, "max_capacity": 3, "occupancy_percent": 66.7, "status": "Half Full"}
+{"timestamp": "2026-01-16 15:13:39", "location": "Canteen", "count": 2, "max_capacity": 3, "occupancy_percent": 66.7, "status": "Half Full"}
+{"timestamp": "2026-01-16 15:13:44", "location": "Canteen", "count": 1, "max_capacity": 3, "occupancy_percent": 33.3, "status": "Quarter Full"}
+{"timestamp": "2026-01-16 15:13:49", "location": "Canteen", "count": 1, "max_capacity": 3, "occupancy_percent": 33.3, "status": "Quarter Full"}
+{"timestamp": "2026-01-16 15:13:54", "location": "Canteen", "count": 1, "max_capacity": 3, "occupancy_percent": 33.3, "status": "Quarter Full"}
+{"timestamp": "2026-01-16 15:13:59", "location": "Canteen", "count": 1, "max_capacity": 3, "occupancy_percent": 33.3, "status": "Quarter Full"}
+{"timestamp": "2026-01-16 15:14:04", "location": "Canteen", "count": 1, "max_capacity": 3, "occupancy_percent": 33.3, "status": "Quarter Full"}
+{"timestamp": "2026-01-16 15:14:09", "location": "Canteen", "count": 1, "max_capacity": 3, "occupancy_percent": 33.3, "status": "Quarter Full"}
+{"timestamp": "2026-01-16 15:14:14", "location": "Canteen", "count": 1, "max_capacity": 3, "occupancy_percent": 33.3, "status": "Quarter Full"}
+{"timestamp": "2026-01-16 15:14:19", "location": "Canteen", "count": 1, "max_capacity": 3, "occupancy_percent": 33.3, "status": "Quarter Full"}
+{"timestamp": "2026-01-16 15:14:24", "location": "Canteen", "count": 1, "max_capacity": 3, "occupancy_percent": 33.3, "status": "Quarter Full"}
+{"timestamp": "2026-01-16 15:14:29", "location": "Canteen", "count": 2, "max_capacity": 3, "occupancy_percent": 66.7, "status": "Half Full"}
+{"timestamp": "2026-01-16 15:14:35", "location": "Canteen", "count": 3, "max_capacity": 3, "occupancy_percent": 100.0, "status": "Full"}
+{"timestamp": "2026-01-16 15:14:40", "location": "Canteen", "count": 3, "max_capacity": 3, "occupancy_percent": 100.0, "status": "Full"}
+{"timestamp": "2026-01-16 15:14:45", "location": "Canteen", "count": 4, "max_capacity": 3, "occupancy_percent": 133.3, "status": "Full"}
+{"timestamp": "2026-01-16 15:14:50", "location": "Canteen", "count": 3, "max_capacity": 3, "occupancy_percent": 100.0, "status": "Full"}
+{"timestamp": "2026-01-16 15:14:55", "location": "Canteen", "count": 3, "max_capacity": 3, "occupancy_percent": 100.0, "status": "Full"}
+{"timestamp": "2026-01-16 15:15:00", "location": "Canteen", "count": 3, "max_capacity": 3, "occupancy_percent": 100.0, "status": "Full"}
+{"timestamp": "2026-01-16 15:15:05", "location": "Canteen", "count": 2, "max_capacity": 30, "occupancy_percent": 6.7, "status": "Empty"}
+{"timestamp": "2026-01-16 15:15:10", "location": "Canteen", "count": 3, "max_capacity": 30, "occupancy_percent": 10.0, "status": "Empty"}
+{"timestamp": "2026-01-16 15:15:15", "location": "Canteen", "count": 4, "max_capacity": 30, "occupancy_percent": 13.3, "status": "Empty"}
+{"timestamp": "2026-01-16 15:15:20", "location": "Canteen", "count": 3, "max_capacity": 30, "occupancy_percent": 10.0, "status": "Empty"}
+{"timestamp": "2026-01-16 15:15:25", "location": "Canteen", "count": 3, "max_capacity": 30, "occupancy_percent": 10.0, "status": "Empty"}

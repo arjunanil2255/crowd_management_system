@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Crowd Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .subtitle {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+        }
+
+        .card h2 {
+            color: #333;
+            margin-bottom: 25px;
+            font-size: 1.5em;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            color: #374151;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .help-text {
+            font-size: 0.9em;
+            color: #6b7280;
+            margin-top: 5px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        button {
+            flex: 1;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .btn-secondary:hover {
+            background: #d1d5db;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid #10b981;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
+        }
+
+        .current-settings {
+            background: #f3f4f6;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .current-settings h3 {
+            color: #374151;
+            margin-bottom: 15px;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #d1d5db;
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-label {
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .setting-value {
+            color: #1f2937;
+            font-weight: 600;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: white;
+            text-decoration: none;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            transition: opacity 0.3s;
+        }
+
+        .back-link:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="back-link">← Back to Dashboard</a>
+
+        <header>
+            <h1>⚙️ System Settings</h1>
+            <p class="subtitle">Configure your crowd monitoring system</p>
+        </header>
+
+        {% if request.args.get('success') %}
+        <div class="alert alert-success">
+            ✅ Settings updated successfully! Changes will take effect within 10 seconds.
+        </div>
+        {% endif %}
+
+        {% if request.args.get('error') %}
+        <div class="alert alert-error">
+            ❌ Error updating settings. Please try again.
+        </div>
+        {% endif %}
+
+        <div class="card">
+            <div class="current-settings">
+                <h3>📊 Current Settings</h3>
+                <div class="setting-item">
+                    <span class="setting-label">Location Name:</span>
+                    <span class="setting-value">{{ config.location_name }}</span>
+                </div>
+                <div class="setting-item">
+                    <span class="setting-label">Maximum Capacity:</span>
+                    <span class="setting-value">{{ config.max_capacity }} people</span>
+                </div>
+            </div>
+
+            <h2>Edit Settings</h2>
+
+            <form action="/update_settings" method="POST">
+                <div class="form-group">
+                    <label for="location_name">📍 Location Name</label>
+                    <input
+                        type="text"
+                        id="location_name"
+                        name="location_name"
+                        value="{{ config.location_name }}"
+                        required
+                        placeholder="e.g., Canteen, Library, ATM"
+                    >
+                    <p class="help-text">Enter the name of the location you're monitoring</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="max_capacity">👥 Maximum Capacity</label>
+                    <input
+                        type="number"
+                        id="max_capacity"
+                        name="max_capacity"
+                        value="{{ config.max_capacity }}"
+                        min="1"
+                        max="1000"
+                        required
+                        placeholder="e.g., 20, 50, 100"
+                    >
+                    <p class="help-text">Maximum number of people allowed in this location</p>
+                </div>
+
+                <div class="button-group">
+                    <button type="submit" class="btn-primary">💾 Save Changes</button>
+                    <button type="button" class="btn-secondary" onclick="window.location.href='/'">Cancel</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="card">
+            <h2>ℹ️ Important Information</h2>
+            <ul style="line-height: 2; color: #374151; margin-left: 20px;">
+                <li>Changes will automatically update in the detection system within <strong>10 seconds</strong></li>
+                <li>Make sure <code>crowd_counter.py</code> is running to see updates</li>
+                <li>The dashboard will show the new settings after refreshing</li>
+                <li>All historical data will remain unchanged</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
