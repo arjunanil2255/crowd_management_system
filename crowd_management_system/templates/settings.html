@@ -190,6 +190,209 @@
         .back-link:hover {
             opacity: 0.8;
         }
+
+        /* Camera Settings Styles */
+        .camera-btn {
+            padding: 12px 20px;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .camera-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .camera-section {
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .camera-section p {
+            color: #374151;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .camera-section .help-text {
+            margin-bottom: 12px;
+        }
+
+        .camera-input-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            align-items: center;
+        }
+
+        .camera-input-row input {
+            padding: 10px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.95em;
+        }
+
+        .camera-input-row input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn-connect {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            white-space: nowrap;
+            transition: all 0.3s;
+        }
+
+        .btn-connect:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .camera-status {
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-weight: 500;
+            display: none;
+        }
+
+        .camera-status.success {
+            background: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid #10b981;
+        }
+
+        .camera-status.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
+        }
+
+        .active-camera-badge {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+
+        /* Multi Camera Card Styles */
+        .multi-cam-card {
+            background: #f3f4f6;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 12px;
+            border: 2px solid #ddd;
+            transition: all 0.3s;
+        }
+
+        .multi-cam-card.active {
+            background: #f0fff4;
+            border-color: #10b981;
+        }
+
+        .multi-cam-card.disabled {
+            background: #f9f9f9;
+            border-color: #ddd;
+            opacity: 0.8;
+        }
+
+        .multi-cam-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .multi-cam-name {
+            font-weight: 700;
+            font-size: 1.05em;
+            color: #1f2937;
+        }
+
+        .multi-cam-badge {
+            display: inline-block;
+            color: white;
+            font-size: 0.75em;
+            padding: 2px 10px;
+            border-radius: 20px;
+            margin-left: 8px;
+        }
+
+        .multi-cam-url {
+            margin-top: 8px;
+            font-size: 0.85em;
+            color: #6b7280;
+            word-break: break-all;
+        }
+
+        .multi-cam-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn-toggle {
+            padding: 6px 14px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85em;
+            transition: all 0.2s;
+        }
+
+        .btn-remove {
+            padding: 6px 14px;
+            border: none;
+            border-radius: 6px;
+            background: #fee2e2;
+            color: #991b1b;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85em;
+            transition: all 0.2s;
+        }
+
+        .btn-remove:hover {
+            background: #fca5a5;
+        }
+
+        select {
+            width: 100%;
+            padding: 10px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            background: white;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
     </style>
 </head>
 <body>
@@ -213,6 +416,7 @@
         </div>
         {% endif %}
 
+        <!-- Location & Capacity Settings Card -->
         <div class="card">
             <div class="current-settings">
                 <h3>📊 Current Settings</h3>
@@ -223,6 +427,20 @@
                 <div class="setting-item">
                     <span class="setting-label">Maximum Capacity:</span>
                     <span class="setting-value">{{ config.max_capacity }} people</span>
+                </div>
+                <div class="setting-item">
+                    <span class="setting-label">Active Camera:</span>
+                    <span class="setting-value" id="activeCameraDisplay">
+                        {% if config.camera_source == '0' or config.camera_source == 0 %}
+                            💻 Laptop Webcam
+                        {% elif config.camera_source == '1' %}
+                            🔌 External Webcam
+                        {% elif 'rtsp' in config.camera_source|string %}
+                            📹 CCTV Camera
+                        {% else %}
+                            📱 IP Camera
+                        {% endif %}
+                    </span>
                 </div>
             </div>
 
@@ -264,15 +482,492 @@
             </form>
         </div>
 
+        <!-- Single Camera Settings Card -->
+        <div class="card">
+            <h2>📷 Single Camera Settings</h2>
+            <p style="color: #6b7280; margin-bottom: 20px;">
+                Connect one camera for basic monitoring using
+                <code>crowd_counter.py</code>.
+            </p>
+
+            <!-- Quick Select Buttons -->
+            <div style="margin-bottom: 20px;">
+                <label>Quick Select:</label>
+                <div style="margin-top: 10px;">
+                    <button onclick="setCamera('0')" class="camera-btn"
+                        style="background: linear-gradient(135deg, #667eea, #764ba2);">
+                        💻 Laptop Webcam
+                    </button>
+                    <button onclick="setCamera('1')" class="camera-btn"
+                        style="background: linear-gradient(135deg, #f093fb, #f5576c);">
+                        🔌 External Webcam
+                    </button>
+                </div>
+            </div>
+
+            <!-- Phone Camera Section -->
+            <div class="camera-section">
+                <p>📱 Phone Camera (IP Webcam App)</p>
+                <span class="help-text">
+                    Install <strong>"IP Webcam"</strong> app on Android or
+                    <strong>"EpocCam"</strong> on iPhone.
+                    Make sure your phone and PC are on the same WiFi network.
+                </span>
+                <div class="camera-input-row">
+                    <input type="text" id="phoneIP"
+                        placeholder="e.g. 192.168.1.5  (only IP, no http://)"
+                        style="flex: 1;">
+                    <input type="text" id="phonePort"
+                        placeholder="Port" value="8080"
+                        style="width: 90px;">
+                    <button onclick="connectPhone()" class="btn-connect">
+                        📱 Connect
+                    </button>
+                </div>
+                <p class="help-text" style="margin-top: 8px;">
+                    💡 Open IP Webcam app → Start Server → Enter
+                    <strong>only the IP numbers</strong> shown on your phone screen
+                </p>
+            </div>
+
+            <!-- CCTV Camera Section -->
+            <div class="camera-section">
+                <p>📹 CCTV / IP Camera (RTSP)</p>
+                <span class="help-text">
+                    Enter your camera's RTSP URL.
+                </span>
+                <div class="camera-input-row">
+                    <input type="text" id="rtspURL"
+                        placeholder="rtsp://username:password@192.168.1.64/stream"
+                        style="flex: 1;">
+                    <button onclick="connectRTSP()" class="btn-connect">
+                        📹 Connect
+                    </button>
+                </div>
+                <p class="help-text" style="margin-top: 8px;">
+                    💡 Hikvision: rtsp://user:pass@ip/Streaming/Channels/101 |
+                    Dahua: rtsp://user:pass@ip/cam/realmonitor?channel=1
+                </p>
+            </div>
+
+            <!-- Status Message -->
+            <div id="cameraStatus" class="camera-status"></div>
+        </div>
+
+        <!-- Multi Camera Management Card -->
+        <div class="card">
+            <h2>🎥 Multi-Camera Management</h2>
+            <p style="color: #6b7280; margin-bottom: 20px;">
+                Add multiple cameras for one area. Run
+                <code>multi_camera.py</code> to use all cameras together.
+                Duplicate people across cameras are counted only once.
+            </p>
+
+            <!-- Camera List -->
+            <div id="cameraList" style="margin-bottom: 20px;">
+                <p style="color: #999; text-align: center; padding: 20px;">
+                    Loading cameras...
+                </p>
+            </div>
+
+            <!-- Add New Camera -->
+            <div style="background: #f8f9ff; padding: 20px; border-radius: 10px; border: 1px solid #e5e7eb;">
+                <p style="font-weight: 600; color: #374151; margin-bottom: 15px;">
+                    ➕ Add New Camera
+                </p>
+
+                <!-- Camera Name -->
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label style="font-size: 0.95em;">Camera Name</label>
+                    <input type="text" id="newCameraName"
+                        placeholder="e.g. Camera 1 - Left Corner"
+                        style="width: 100%; padding: 10px;
+                               border: 2px solid #ddd; border-radius: 8px;">
+                </div>
+
+                <!-- Camera Type -->
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label style="font-size: 0.95em;">Camera Type</label>
+                    <select id="newCameraType" onchange="updateURLPreview()">
+                        <option value="webcam0">💻 Laptop Webcam (Camera 0)</option>
+                        <option value="webcam1">🔌 External Webcam (Camera 1)</option>
+                        <option value="phone">📱 Phone (IP Webcam App)</option>
+                        <option value="rtsp">📹 CCTV (RTSP)</option>
+                    </select>
+                </div>
+
+                <!-- Phone IP Fields -->
+                <div id="phoneFields" style="display: none; margin-bottom: 15px;">
+                    <label style="font-size: 0.95em;">Phone IP Address</label>
+                    <div class="camera-input-row">
+                        <input type="text" id="newPhoneIP"
+                            placeholder="192.168.1.5"
+                            style="flex: 1;"
+                            oninput="updateURLPreview()">
+                        <input type="text" id="newPhonePort"
+                            placeholder="8080" value="8080"
+                            style="width: 90px;"
+                            oninput="updateURLPreview()">
+                    </div>
+                </div>
+
+                <!-- RTSP URL Field -->
+                <div id="rtspFields" style="display: none; margin-bottom: 15px;">
+                    <label style="font-size: 0.95em;">RTSP URL</label>
+                    <input type="text" id="newRtspURL"
+                        placeholder="rtsp://username:password@192.168.1.64/stream"
+                        style="width: 100%; padding: 10px;
+                               border: 2px solid #ddd; border-radius: 8px;"
+                        oninput="updateURLPreview()">
+                </div>
+
+                <!-- URL Preview -->
+                <div id="urlPreview"
+                    style="background: #e8f5e9; padding: 10px; border-radius: 8px;
+                           margin-bottom: 15px; display: none;">
+                    <span style="color: #6b7280; font-size: 0.85em;">Camera URL: </span>
+                    <span id="urlPreviewText"
+                        style="color: #065f46; font-weight: 600; font-size: 0.9em;
+                               word-break: break-all;"></span>
+                </div>
+
+                <!-- Add Button -->
+                <button onclick="addCamera()"
+                    style="width: 100%; padding: 12px;
+                           background: linear-gradient(135deg, #667eea, #764ba2);
+                           color: white; border: none; border-radius: 8px;
+                           font-size: 1em; font-weight: 600; cursor: pointer;
+                           transition: all 0.3s;"
+                    onmouseover="this.style.transform='translateY(-2px)'"
+                    onmouseout="this.style.transform='translateY(0)'">
+                    ➕ Add Camera
+                </button>
+            </div>
+
+            <!-- Multi Camera Status -->
+            <div id="multiCameraStatus" class="camera-status" style="margin-top: 15px;"></div>
+        </div>
+
+        <!-- Info Card -->
         <div class="card">
             <h2>ℹ️ Important Information</h2>
             <ul style="line-height: 2; color: #374151; margin-left: 20px;">
-                <li>Changes will automatically update in the detection system within <strong>10 seconds</strong></li>
-                <li>Make sure <code>crowd_counter.py</code> is running to see updates</li>
-                <li>The dashboard will show the new settings after refreshing</li>
-                <li>All historical data will remain unchanged</li>
+                <li>Location and capacity changes take effect within <strong>10 seconds</strong></li>
+                <li>Camera changes take effect <strong>immediately</strong> (next frame)</li>
+                <li>Use <code>crowd_counter.py</code> for <strong>single camera</strong> monitoring</li>
+                <li>Use <code>multi_camera.py</code> for <strong>multiple cameras</strong> monitoring</li>
+                <li>Phone and PC must be on the <strong>same WiFi</strong> for phone camera</li>
+                <li>Enter <strong>only the IP address</strong> in phone fields — no http://</li>
+                <li>🟢 Green box = person counted | 🔴 Red box = duplicate, not counted</li>
             </ul>
         </div>
     </div>
+
+    <script>
+        // ── Single Camera Functions ──────────────────────────────────
+
+        function setCamera(source) {
+            fetch('/update_camera', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ camera_source: source })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    const name = source === '0' ? '💻 Laptop Webcam' : '🔌 External Webcam';
+                    showStatus('success', '✅ Switched to ' + name + '!');
+                } else {
+                    showStatus('error', '❌ Failed to switch camera.');
+                }
+            })
+            .catch(() => showStatus('error', '❌ Connection error.'));
+        }
+
+        function connectPhone() {
+            const rawInput = document.getElementById('phoneIP').value.trim();
+            const port = document.getElementById('phonePort').value.trim() || '8080';
+
+            if (!rawInput) {
+                showStatus('error', '❌ Please enter your phone IP address.');
+                return;
+            }
+
+            let cleanIP = rawInput
+                .replace(/https?:\/\//g, '')
+                .split(':')[0]
+                .split('/')[0]
+                .trim();
+
+            if (!cleanIP.match(/^\d+\.\d+\.\d+\.\d+$/)) {
+                showStatus('error', '❌ Invalid IP. Enter only numbers like 192.168.1.5');
+                return;
+            }
+
+            const url = `http://${cleanIP}:${port}/video`;
+
+            fetch('/update_camera', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ camera_source: url })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    showStatus('success', '✅ Connected! URL: ' + url);
+                } else {
+                    showStatus('error', '❌ Failed to connect.');
+                }
+            })
+            .catch(() => showStatus('error', '❌ Connection error.'));
+        }
+
+        function connectRTSP() {
+            const url = document.getElementById('rtspURL').value.trim();
+            if (!url) {
+                showStatus('error', '❌ Please enter the RTSP URL.');
+                return;
+            }
+            if (!url.startsWith('rtsp://')) {
+                showStatus('error', '❌ RTSP URL must start with rtsp://');
+                return;
+            }
+            fetch('/update_camera', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ camera_source: url })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    showStatus('success', '✅ CCTV camera connected!');
+                } else {
+                    showStatus('error', '❌ Failed to connect.');
+                }
+            })
+            .catch(() => showStatus('error', '❌ Connection error.'));
+        }
+
+        function showStatus(type, message) {
+            const status = document.getElementById('cameraStatus');
+            status.className = 'camera-status ' + type;
+            status.textContent = message;
+            status.style.display = 'block';
+            setTimeout(() => status.style.display = 'none', 4000);
+        }
+
+        // Load current single camera on page load
+        fetch('/get_camera')
+            .then(res => res.json())
+            .then(data => {
+                const source = data.camera_source;
+                if (source && source !== '0' && source !== '1') {
+                    if (source.startsWith('rtsp://')) {
+                        document.getElementById('rtspURL').value = source;
+                    } else if (source.includes('/video')) {
+                        try {
+                            const cleanSource = source.replace(/https?:\/\//g, '');
+                            const cleanIP = cleanSource.split(':')[0];
+                            const cleanPort = cleanSource.split(':')[1]?.split('/')[0] || '8080';
+                            document.getElementById('phoneIP').value = cleanIP;
+                            document.getElementById('phonePort').value = cleanPort;
+                        } catch(e) {}
+                    }
+                }
+            })
+            .catch(() => {});
+
+        // ── Multi Camera Functions ───────────────────────────────────
+
+        function getCameraIcon(url) {
+            if (url === '0' || url === 0) return '💻';
+            if (url === '1' || url === 1) return '🔌';
+            if (String(url).startsWith('rtsp')) return '📹';
+            return '📱';
+        }
+
+        function formatURL(url) {
+            if (url === '0' || url === 0) return 'Laptop Webcam (Camera 0)';
+            if (url === '1' || url === 1) return 'External Webcam (Camera 1)';
+            return url;
+        }
+
+        function loadCameras() {
+            fetch('/get_cameras')
+                .then(res => res.json())
+                .then(data => {
+                    const list = document.getElementById('cameraList');
+                    const cameras = data.cameras;
+
+                    if (!cameras || cameras.length === 0) {
+                        list.innerHTML = `
+                            <div style="text-align: center; padding: 20px;
+                                        color: #999; background: #f9f9f9;
+                                        border-radius: 10px; border: 2px dashed #ddd;">
+                                No cameras added yet.<br>Add your first camera below!
+                            </div>`;
+                        return;
+                    }
+
+                    list.innerHTML = cameras.map(cam => `
+                        <div class="multi-cam-card ${cam.enabled ? 'active' : 'disabled'}">
+                            <div class="multi-cam-header">
+                                <div>
+                                    <span class="multi-cam-name">
+                                        ${getCameraIcon(cam.url)} ${cam.name}
+                                    </span>
+                                    <span class="multi-cam-badge"
+                                        style="background: ${cam.enabled ? '#10b981' : '#9ca3af'}">
+                                        ${cam.enabled ? '● Active' : '○ Disabled'}
+                                    </span>
+                                </div>
+                                <div class="multi-cam-actions">
+                                    <button class="btn-toggle"
+                                        onclick="toggleCamera(${cam.id})"
+                                        style="background: ${cam.enabled ? '#fef3c7' : '#d1fae5'};
+                                               color: ${cam.enabled ? '#92400e' : '#065f46'};">
+                                        ${cam.enabled ? '⏸ Disable' : '▶ Enable'}
+                                    </button>
+                                    <button class="btn-remove"
+                                        onclick="removeCamera(${cam.id}, '${cam.name}')">
+                                        🗑 Remove
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="multi-cam-url">
+                                📡 ${formatURL(cam.url)}
+                            </div>
+                        </div>
+                    `).join('');
+                })
+                .catch(() => {
+                    document.getElementById('cameraList').innerHTML =
+                        '<p style="color: red; text-align: center;">❌ Error loading cameras. Make sure app.py is running.</p>';
+                });
+        }
+
+        function updateURLPreview() {
+            const type = document.getElementById('newCameraType').value;
+            const phoneFields = document.getElementById('phoneFields');
+            const rtspFields = document.getElementById('rtspFields');
+            const preview = document.getElementById('urlPreview');
+            const previewText = document.getElementById('urlPreviewText');
+
+            phoneFields.style.display = type === 'phone' ? 'block' : 'none';
+            rtspFields.style.display = type === 'rtsp' ? 'block' : 'none';
+
+            let url = '';
+            if (type === 'webcam0') url = '0 (Laptop Webcam)';
+            else if (type === 'webcam1') url = '1 (External Webcam)';
+            else if (type === 'phone') {
+                const rawIP = document.getElementById('newPhoneIP').value.trim();
+                const port = document.getElementById('newPhonePort').value.trim() || '8080';
+                const cleanIP = rawIP.replace(/https?:\/\//g, '').split(':')[0].split('/')[0];
+                if (cleanIP) url = `http://${cleanIP}:${port}/video`;
+            }
+            else if (type === 'rtsp') {
+                url = document.getElementById('newRtspURL').value.trim();
+            }
+
+            if (url) {
+                preview.style.display = 'block';
+                previewText.textContent = url;
+            } else {
+                preview.style.display = 'none';
+            }
+        }
+
+        function addCamera() {
+            const name = document.getElementById('newCameraName').value.trim();
+            const type = document.getElementById('newCameraType').value;
+
+            if (!name) {
+                showMultiStatus('error', '❌ Please enter a camera name.');
+                return;
+            }
+
+            let url = '';
+            if (type === 'webcam0') url = '0';
+            else if (type === 'webcam1') url = '1';
+            else if (type === 'phone') {
+                const rawIP = document.getElementById('newPhoneIP').value.trim();
+                const port = document.getElementById('newPhonePort').value.trim() || '8080';
+                const cleanIP = rawIP
+                    .replace(/https?:\/\//g, '')
+                    .split(':')[0].split('/')[0];
+                if (!cleanIP.match(/^\d+\.\d+\.\d+\.\d+$/)) {
+                    showMultiStatus('error', '❌ Invalid IP address.');
+                    return;
+                }
+                url = `http://${cleanIP}:${port}/video`;
+            }
+            else if (type === 'rtsp') {
+                url = document.getElementById('newRtspURL').value.trim();
+                if (!url.startsWith('rtsp://')) {
+                    showMultiStatus('error', '❌ RTSP URL must start with rtsp://');
+                    return;
+                }
+            }
+
+            fetch('/add_camera', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: name, url: url })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    showMultiStatus('success', `✅ ${name} added successfully!`);
+                    document.getElementById('newCameraName').value = '';
+                    document.getElementById('newPhoneIP').value = '';
+                    document.getElementById('newRtspURL').value = '';
+                    document.getElementById('urlPreview').style.display = 'none';
+                    loadCameras();
+                } else {
+                    showMultiStatus('error', '❌ Failed to add camera.');
+                }
+            })
+            .catch(() => showMultiStatus('error', '❌ Connection error.'));
+        }
+
+        function toggleCamera(id) {
+            fetch('/toggle_camera', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: id })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) loadCameras();
+            });
+        }
+
+        function removeCamera(id, name) {
+            if (!confirm(`Remove "${name}"? This cannot be undone.`)) return;
+            fetch('/remove_camera', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: id })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    showMultiStatus('success', '✅ Camera removed!');
+                    loadCameras();
+                }
+            });
+        }
+
+        function showMultiStatus(type, message) {
+            const status = document.getElementById('multiCameraStatus');
+            status.className = 'camera-status ' + type;
+            status.textContent = message;
+            status.style.display = 'block';
+            setTimeout(() => status.style.display = 'none', 4000);
+        }
+
+        // Load cameras when page opens
+        loadCameras();
+    </script>
 </body>
 </html>

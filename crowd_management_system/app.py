@@ -81,6 +81,19 @@ def home():
     config = load_config()
     return render_template('index.html', data=latest, history=history, config=config)
 
+@app.route('/update_camera', methods=['POST'])
+def update_camera():
+    data = request.json
+    config = load_config()
+    config['camera_source'] = data.get('camera_source', '0')
+    save_config(config)
+    return jsonify({'success': True, 'message': 'Camera updated!'})
+
+@app.route('/get_camera', methods=['GET'])
+def get_camera():
+    config = load_config()
+    return jsonify({'camera_source': config.get('camera_source', '0')})
+
 
 @app.route('/settings')
 def settings():
@@ -127,15 +140,86 @@ def api_history():
     history = get_all_data(50)
     return jsonify(history)
 
+@app.route('/get_cameras', methods=['GET'])
+def get_cameras():
+    config = load_config()
+    cameras = config.get('cameras', [])
+    return jsonify({'cameras': cameras})
+
+@app.route('/update_cameras', methods=['POST'])
+def update_cameras():
+    try:
+        data = request.json
+        config = load_config()
+        config['cameras'] = data.get('cameras', [])
+        save_config(config)
+        return jsonify({'success': True, 'message': 'Cameras updated!'})
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)})
+
+@app.route('/add_camera', methods=['POST'])
+def add_camera():
+    try:
+        data = request.json
+        config = load_config()
+        cameras = config.get('cameras', [])
+
+        # Generate new camera ID
+        new_id = max([c['id'] for c in cameras], default=0) + 1
+
+        new_camera = {
+            'id': new_id,
+            'name': data.get('name', f'Camera {new_id}'),
+            'url': data.get('url', '0'),
+            'enabled': True
+        }
+        cameras.append(new_camera)
+        config['cameras'] = cameras
+        save_config(config)
+        return jsonify({'success': True, 'camera': new_camera})
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)})
+
+@app.route('/remove_camera', methods=['POST'])
+def remove_camera():
+    try:
+        data = request.json
+        camera_id = data.get('id')
+        config = load_config()
+        cameras = config.get('cameras', [])
+        cameras = [c for c in cameras if c['id'] != camera_id]
+        config['cameras'] = cameras
+        save_config(config)
+        return jsonify({'success': True})
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)})
+
+@app.route('/toggle_camera', methods=['POST'])
+def toggle_camera():
+    try:
+        data = request.json
+        camera_id = data.get('id')
+        config = load_config()
+        cameras = config.get('cameras', [])
+        for cam in cameras:
+            if cam['id'] == camera_id:
+                cam['enabled'] = not cam['enabled']
+                break
+        config['cameras'] = cameras
+        save_config(config)
+        return jsonify({'success': True})
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)})
+
 
 if __name__ == '__main__':
     print("=" * 60)
-    print("🚀 Starting Crowd Management Dashboard...")
+    print(" Starting Crowd Management Dashboard...")
     print("=" * 60)
-    print("📊 Dashboard URL: http://127.0.0.1:5000")
-    print("⚙️  Settings URL: http://127.0.0.1:5000/settings")
+    print(" Dashboard URL: http://127.0.0.1:5000")
+    print(" Settings URL: http://127.0.0.1:5000/settings")
     print("=" * 60)
-    print("💡 Make sure crowd_counter.py is running to generate data!")
-    print("🛑 Press CTRL+C to stop the server")
+    print(" Make sure crowd_counter.py is running to generate data!")
+    print(" Press CTRL+C to stop the server")
     print("=" * 60)
     app.run(debug=True, host='0.0.0.0', port=5000)
