@@ -3,591 +3,528 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Settings - Crowd Management System</title>
+    <title>Settings – CrowdSense</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #0d1117;
+            --card: #1c2333;
+            --card2: #202a3a;
+            --border: #243047;
+            --border2: #2d3f5a;
+            --text: #e6edf3;
+            --muted: #7d8faa;
+            --radius: 18px;
+            --accent: #3b82f6;
+            --accent-bg: rgba(59,130,246,.12);
+            --accent-border: rgba(59,130,246,.28);
+            --green: #22c55e;
+            --green-bg: rgba(34,197,94,.12);
+            --green-border: rgba(34,197,94,.25);
+            --red: #ef4444;
+            --red-bg: rgba(239,68,68,.1);
+            --red-border: rgba(239,68,68,.25);
+            --yellow: #eab308;
+            --yellow-bg: rgba(234,179,8,.1);
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
             min-height: 100vh;
-            padding: 20px;
+            padding: 28px 18px 70px;
         }
 
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
+        body::before {
+            content: '';
+            position: fixed; inset: 0;
+            background:
+                radial-gradient(ellipse 70% 50% at 10% 0%,   rgba(59,130,246,.08) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 40% at 90% 100%, rgba(34,197,94,.05)  0%, transparent 60%);
+            pointer-events: none; z-index: 0;
         }
 
+        .wrapper {
+            position: relative; z-index: 1;
+            max-width: 820px; margin: 0 auto;
+        }
+
+        /* ── Header ── */
         header {
-            text-align: center;
-            color: white;
-            margin-bottom: 30px;
+            display: flex; align-items: center;
+            justify-content: space-between;
+            margin-bottom: 34px; flex-wrap: wrap; gap: 14px;
+            animation: up .45s ease both;
         }
 
-        h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        .brand { display: flex; align-items: center; gap: 13px; }
+
+        .brand-icon {
+            width: 46px; height: 46px;
+            background: linear-gradient(135deg,#3b82f6,#06b6d4);
+            border-radius: 13px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px;
+            box-shadow: 0 4px 20px rgba(59,130,246,.3);
         }
 
-        .subtitle {
-            font-size: 1.1em;
-            opacity: 0.9;
+        .brand-text h1 { font-family:'Syne',sans-serif; font-size:1.2rem; font-weight:800; letter-spacing:-.4px; }
+        .brand-text p  { font-size:.72rem; color:var(--muted); text-transform:uppercase; letter-spacing:.6px; margin-top:1px; }
+
+        .back-btn {
+            display: flex; align-items: center; gap: 7px;
+            background: var(--card); border: 1px solid var(--border);
+            color: var(--muted); border-radius: 11px;
+            padding: 8px 18px; font-size:.82rem; font-weight:500;
+            text-decoration: none; transition: border-color .2s, color .2s;
+        }
+        .back-btn:hover { border-color: var(--accent); color: var(--text); }
+
+        /* ── Alert banners ── */
+        .alert {
+            display: flex; align-items: center; gap: 10px;
+            padding: 14px 18px; border-radius: 12px;
+            margin-bottom: 20px; font-size:.88rem; font-weight:500;
+            animation: up .4s ease both;
+        }
+        .alert-success { background: var(--green-bg); border: 1px solid var(--green-border); color: var(--green); }
+        .alert-error   { background: var(--red-bg);   border: 1px solid var(--red-border);   color: var(--red);   }
+
+        /* ── Section cards ── */
+        .section {
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: var(--radius); margin-bottom: 20px;
+            overflow: hidden;
+            animation: up .45s ease both;
         }
 
-        .card {
-            background: white;
-            border-radius: 15px;
-            padding: 40px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            margin-bottom: 20px;
+        .section-head {
+            display: flex; align-items: center; gap: 12px;
+            padding: 20px 24px; border-bottom: 1px solid var(--border);
         }
 
-        .card h2 {
-            color: #333;
-            margin-bottom: 25px;
-            font-size: 1.5em;
-            border-bottom: 2px solid #667eea;
-            padding-bottom: 10px;
+        .section-icon {
+            width: 38px; height: 38px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center; font-size:18px;
+            flex-shrink: 0;
         }
 
-        .form-group {
-            margin-bottom: 25px;
+        .section-title { font-family:'Syne',sans-serif; font-size:1rem; font-weight:700; }
+        .section-sub   { font-size:.74rem; color:var(--muted); margin-top:2px; }
+
+        .section-body { padding: 24px; }
+
+        /* ── Current settings summary ── */
+        .summary {
+            background: var(--card2); border: 1px solid var(--border);
+            border-radius: 12px; padding: 18px 20px;
+            margin-bottom: 24px;
+            display: flex; flex-direction: column; gap: 0;
         }
+
+        .summary-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 11px 0; border-bottom: 1px solid var(--border);
+        }
+        .summary-row:last-child { border-bottom: none; }
+
+        .s-lbl { font-size:.8rem; color:var(--muted); font-weight:500; }
+        .s-val { font-size:.88rem; font-weight:600; color:var(--text); }
+
+        /* ── Form elements ── */
+        .form-group { margin-bottom: 22px; }
+        .form-group:last-child { margin-bottom: 0; }
 
         label {
-            display: block;
-            color: #374151;
-            font-weight: 600;
-            margin-bottom: 8px;
-            font-size: 1.1em;
+            display: block; font-size:.82rem; font-weight:600;
+            color: var(--muted); text-transform:uppercase;
+            letter-spacing:.5px; margin-bottom: 9px;
         }
 
         input[type="text"],
-        input[type="number"] {
+        input[type="number"],
+        select {
             width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e5e7eb;
-            border-radius: 8px;
-            font-size: 1em;
-            transition: border-color 0.3s;
+            background: var(--card2); border: 1px solid var(--border2);
+            color: var(--text); border-radius: 11px;
+            padding: 12px 16px; font-size:.92rem;
+            font-family: 'DM Sans', sans-serif;
+            transition: border-color .2s, box-shadow .2s;
+            outline: none;
+            appearance: none;
         }
 
         input[type="text"]:focus,
-        input[type="number"]:focus {
-            outline: none;
-            border-color: #667eea;
+        input[type="number"]:focus,
+        select:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(59,130,246,.15);
         }
 
-        .help-text {
-            font-size: 0.9em;
-            color: #6b7280;
-            margin-top: 5px;
-        }
+        .hint { font-size:.75rem; color:var(--muted); margin-top:7px; }
 
-        .button-group {
-            display: flex;
-            gap: 15px;
-            margin-top: 30px;
-        }
-
-        button {
-            flex: 1;
-            padding: 15px 30px;
-            font-size: 1.1em;
-            font-weight: 600;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
+        /* ── Buttons ── */
+        .btn-row { display:flex; gap:12px; margin-top:26px; flex-wrap:wrap; }
 
         .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            flex:1; min-width:140px;
+            padding: 13px 24px;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white; border: none; border-radius: 11px;
+            font-size:.92rem; font-weight:600;
+            font-family:'DM Sans',sans-serif;
+            cursor: pointer;
+            box-shadow: 0 4px 18px rgba(59,130,246,.3);
+            transition: transform .2s, box-shadow .2s;
         }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
+        .btn-primary:hover { transform:translateY(-2px); box-shadow:0 6px 22px rgba(59,130,246,.4); }
 
         .btn-secondary {
-            background: #e5e7eb;
-            color: #374151;
+            padding: 13px 24px;
+            background: var(--card2); border: 1px solid var(--border2);
+            color: var(--muted); border-radius: 11px;
+            font-size:.92rem; font-weight:500;
+            font-family:'DM Sans',sans-serif;
+            cursor: pointer; transition: border-color .2s, color .2s;
+        }
+        .btn-secondary:hover { border-color:var(--border2); color:var(--text); }
+
+        /* ── Quick camera buttons ── */
+        .quick-btns { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px; }
+
+        .qbtn {
+            display: flex; align-items: center; gap: 8px;
+            padding: 11px 20px;
+            background: var(--card2); border: 1px solid var(--border2);
+            color: var(--text); border-radius: 11px;
+            font-size:.85rem; font-weight:600;
+            font-family:'DM Sans',sans-serif;
+            cursor: pointer; transition: all .2s;
+        }
+        .qbtn:hover { border-color:var(--accent); background:var(--accent-bg); color:var(--accent); }
+        .qbtn.active { border-color:var(--accent); background:var(--accent-bg); color:var(--accent); }
+
+        /* ── Camera input sections ── */
+        .cam-section {
+            background: var(--card2); border: 1px solid var(--border);
+            border-radius: 12px; padding: 18px 20px; margin-bottom: 14px;
         }
 
-        .btn-secondary:hover {
-            background: #d1d5db;
+        .cam-section-title {
+            font-size:.85rem; font-weight:600; color:var(--text);
+            margin-bottom:4px;
         }
+        .cam-section-sub { font-size:.74rem; color:var(--muted); margin-bottom:14px; }
 
-        .alert {
-            padding: 15px 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            font-weight: 500;
-        }
+        .input-row { display:flex; gap:10px; align-items:center; }
 
-        .alert-success {
-            background: #d1fae5;
-            color: #065f46;
-            border-left: 4px solid #10b981;
-        }
-
-        .alert-error {
-            background: #fee2e2;
-            color: #991b1b;
-            border-left: 4px solid #ef4444;
-        }
-
-        .current-settings {
-            background: #f3f4f6;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 30px;
-        }
-
-        .current-settings h3 {
-            color: #374151;
-            margin-bottom: 15px;
-        }
-
-        .setting-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px solid #d1d5db;
-        }
-
-        .setting-item:last-child {
-            border-bottom: none;
-        }
-
-        .setting-label {
-            color: #6b7280;
-            font-weight: 500;
-        }
-
-        .setting-value {
-            color: #1f2937;
-            font-weight: 600;
-        }
-
-        .back-link {
-            display: inline-block;
-            color: white;
-            text-decoration: none;
-            margin-bottom: 20px;
-            font-size: 1.1em;
-            transition: opacity 0.3s;
-        }
-
-        .back-link:hover {
-            opacity: 0.8;
-        }
-
-        /* Camera Settings Styles */
-        .camera-btn {
-            padding: 12px 20px;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-right: 10px;
-            margin-bottom: 10px;
-            font-size: 1em;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-
-        .camera-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-
-        .camera-section {
-            background: #f8f9ff;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #e5e7eb;
-        }
-
-        .camera-section p {
-            color: #374151;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-
-        .camera-section .help-text {
-            margin-bottom: 12px;
-        }
-
-        .camera-input-row {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-            align-items: center;
-        }
-
-        .camera-input-row input {
-            padding: 10px 15px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 0.95em;
-        }
-
-        .camera-input-row input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
+        .input-row input { flex:1; }
+        .input-row .port-input { width:90px; flex:none; }
 
         .btn-connect {
-            padding: 10px 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            white-space: nowrap;
-            transition: all 0.3s;
+            padding: 11px 20px;
+            background: var(--accent); color: white;
+            border: none; border-radius: 11px;
+            font-size:.85rem; font-weight:600;
+            font-family:'DM Sans',sans-serif;
+            cursor: pointer; white-space:nowrap;
+            transition: background .2s, transform .2s;
+        }
+        .btn-connect:hover { background:#2563eb; transform:translateY(-1px); }
+
+        .cam-status {
+            display:none; margin-top:14px;
+            padding: 12px 16px; border-radius:10px;
+            font-size:.83rem; font-weight:500;
+        }
+        .cam-status.success { background:var(--green-bg); border:1px solid var(--green-border); color:var(--green); }
+        .cam-status.error   { background:var(--red-bg);   border:1px solid var(--red-border);   color:var(--red); }
+
+        /* ── Multi-camera cards ── */
+        .cam-card {
+            background: var(--card2); border: 1px solid var(--border);
+            border-radius: 12px; padding: 16px 18px;
+            margin-bottom: 12px; transition: border-color .2s;
+        }
+        .cam-card.active   { border-color: var(--green-border); }
+        .cam-card.disabled { opacity:.7; }
+
+        .cam-card-header {
+            display:flex; justify-content:space-between;
+            align-items:center; flex-wrap:wrap; gap:10px;
         }
 
-        .btn-connect:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
+        .cam-card-name { font-weight:700; font-size:.95rem; }
 
-        .camera-status {
-            padding: 12px 15px;
-            border-radius: 8px;
-            margin-top: 15px;
-            font-weight: 500;
-            display: none;
+        .cam-badge {
+            display:inline-block; padding:3px 12px; border-radius:50px;
+            font-size:.73rem; font-weight:600;
         }
+        .cam-badge.on  { background:var(--green-bg); color:var(--green); border:1px solid var(--green-border); }
+        .cam-badge.off { background:var(--card);     color:var(--muted); border:1px solid var(--border); }
 
-        .camera-status.success {
-            background: #d1fae5;
-            color: #065f46;
-            border-left: 4px solid #10b981;
-        }
+        .cam-card-url { font-size:.78rem; color:var(--muted); margin-top:8px; word-break:break-all; }
 
-        .camera-status.error {
-            background: #fee2e2;
-            color: #991b1b;
-            border-left: 4px solid #ef4444;
-        }
-
-        .active-camera-badge {
-            display: inline-block;
-            background: #667eea;
-            color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.85em;
-            margin-left: 10px;
-            vertical-align: middle;
-        }
-
-        /* Multi Camera Card Styles */
-        .multi-cam-card {
-            background: #f3f4f6;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 12px;
-            border: 2px solid #ddd;
-            transition: all 0.3s;
-        }
-
-        .multi-cam-card.active {
-            background: #f0fff4;
-            border-color: #10b981;
-        }
-
-        .multi-cam-card.disabled {
-            background: #f9f9f9;
-            border-color: #ddd;
-            opacity: 0.8;
-        }
-
-        .multi-cam-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .multi-cam-name {
-            font-weight: 700;
-            font-size: 1.05em;
-            color: #1f2937;
-        }
-
-        .multi-cam-badge {
-            display: inline-block;
-            color: white;
-            font-size: 0.75em;
-            padding: 2px 10px;
-            border-radius: 20px;
-            margin-left: 8px;
-        }
-
-        .multi-cam-url {
-            margin-top: 8px;
-            font-size: 0.85em;
-            color: #6b7280;
-            word-break: break-all;
-        }
-
-        .multi-cam-actions {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
+        .cam-card-actions { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
 
         .btn-toggle {
-            padding: 6px 14px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.85em;
-            transition: all 0.2s;
+            padding: 6px 14px; border-radius:8px;
+            font-size:.78rem; font-weight:600;
+            font-family:'DM Sans',sans-serif;
+            cursor:pointer; border:1px solid;
+            transition: all .2s;
         }
+        .btn-toggle.disable { background:var(--yellow-bg); border-color:rgba(234,179,8,.3); color:var(--yellow); }
+        .btn-toggle.enable  { background:var(--green-bg);  border-color:var(--green-border); color:var(--green); }
+        .btn-toggle:hover { transform:translateY(-1px); }
 
         .btn-remove {
-            padding: 6px 14px;
-            border: none;
-            border-radius: 6px;
-            background: #fee2e2;
-            color: #991b1b;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.85em;
-            transition: all 0.2s;
+            padding: 6px 14px; border-radius:8px;
+            font-size:.78rem; font-weight:600;
+            font-family:'DM Sans',sans-serif;
+            cursor:pointer; border:1px solid var(--red-border);
+            background:var(--red-bg); color:var(--red);
+            transition: all .2s;
+        }
+        .btn-remove:hover { transform:translateY(-1px); }
+
+        .no-cameras {
+            text-align:center; padding:30px 20px;
+            background:var(--card2); border:2px dashed var(--border2);
+            border-radius:12px; color:var(--muted); font-size:.88rem;
         }
 
-        .btn-remove:hover {
-            background: #fca5a5;
+        /* ── Add camera form ── */
+        .add-cam-box {
+            background: var(--card2); border: 1px solid var(--border);
+            border-radius: 12px; padding: 20px;
+            margin-top: 8px;
         }
 
-        select {
-            width: 100%;
-            padding: 10px 15px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 1em;
-            background: white;
-            cursor: pointer;
-            transition: border-color 0.3s;
+        .add-cam-title { font-family:'Syne',sans-serif; font-size:.9rem; font-weight:700; margin-bottom:16px; }
+
+        .url-preview {
+            background:var(--green-bg); border:1px solid var(--green-border);
+            border-radius:9px; padding:10px 14px;
+            font-size:.78rem; color:var(--green);
+            margin-bottom:14px; display:none; word-break:break-all;
         }
 
-        select:focus {
-            outline: none;
-            border-color: #667eea;
+        .btn-add-cam {
+            width:100%; padding:13px;
+            background:linear-gradient(135deg,#3b82f6,#2563eb);
+            color:white; border:none; border-radius:11px;
+            font-size:.92rem; font-weight:600;
+            font-family:'DM Sans',sans-serif;
+            cursor:pointer;
+            box-shadow:0 4px 18px rgba(59,130,246,.25);
+            transition: transform .2s, box-shadow .2s;
+        }
+        .btn-add-cam:hover { transform:translateY(-2px); box-shadow:0 6px 22px rgba(59,130,246,.35); }
+
+        /* ── Info list ── */
+        .info-list { list-style:none; display:flex; flex-direction:column; gap:10px; }
+
+        .info-list li {
+            display:flex; align-items:flex-start; gap:10px;
+            font-size:.86rem; color:var(--muted); line-height:1.5;
+        }
+
+        .info-list li span.ico { font-size:1rem; flex-shrink:0; margin-top:1px; }
+        .info-list li strong { color:var(--text); }
+        code {
+            background:var(--card2); border:1px solid var(--border);
+            padding:1px 7px; border-radius:5px;
+            font-size:.82em; color:var(--accent);
+        }
+
+        /* ── Animations ── */
+        @keyframes up {
+            from { opacity:0; transform:translateY(16px); }
+            to   { opacity:1; transform:translateY(0); }
+        }
+
+        .section:nth-child(2)  { animation-delay:.05s; }
+        .section:nth-child(3)  { animation-delay:.1s;  }
+        .section:nth-child(4)  { animation-delay:.15s; }
+        .section:nth-child(5)  { animation-delay:.2s;  }
+
+        @media(max-width:560px){
+            .input-row { flex-direction:column; }
+            .input-row .port-input { width:100%; }
+            .btn-row { flex-direction:column; }
+            .btn-primary, .btn-secondary { width:100%; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <a href="/" class="back-link">← Back to Dashboard</a>
+<div class="wrapper">
 
-        <header>
-            <h1>⚙️ System Settings</h1>
-            <p class="subtitle">Configure your crowd monitoring system</p>
-        </header>
-
-        {% if request.args.get('success') %}
-        <div class="alert alert-success">
-            ✅ Settings updated successfully! Changes will take effect within 10 seconds.
+    <!-- Header -->
+    <header>
+        <div class="brand">
+            <div class="brand-icon">🎥</div>
+            <div class="brand-text">
+                <h1>CrowdSense</h1>
+                <p>System Settings</p>
+            </div>
         </div>
-        {% endif %}
-
-        {% if request.args.get('error') %}
-        <div class="alert alert-error">
-            ❌ Error updating settings. Please try again.
+        <div style="display:flex;gap:10px;align-items:center;">
+            <a href="/" class="back-btn">← Back to Dashboard</a>
+            <a href="/logout" class="back-btn" style="color:#ef4444;border-color:rgba(239,68,68,.3);">🚪 Logout</a>
         </div>
-        {% endif %}
+    </header>
 
-        <!-- Location & Capacity Settings Card -->
-        <div class="card">
-            <div class="current-settings">
-                <h3>📊 Current Settings</h3>
-                <div class="setting-item">
-                    <span class="setting-label">Location Name:</span>
-                    <span class="setting-value">{{ config.location_name }}</span>
+    <!-- Alerts -->
+    {% if request.args.get('success') %}
+    <div class="alert alert-success">✅ Settings saved! Changes take effect within 10 seconds.</div>
+    {% endif %}
+    {% if request.args.get('error') %}
+    <div class="alert alert-error">❌ Error updating settings. Please try again.</div>
+    {% endif %}
+
+    <!-- ── Location & Capacity ── -->
+    <div class="section">
+        <div class="section-head">
+            <div class="section-icon" style="background:var(--accent-bg);">📍</div>
+            <div>
+                <div class="section-title">Location & Capacity</div>
+                <div class="section-sub">Basic monitoring configuration</div>
+            </div>
+        </div>
+        <div class="section-body">
+
+            <!-- Summary -->
+            <div class="summary">
+                <div class="summary-row">
+                    <span class="s-lbl">Location Name</span>
+                    <span class="s-val">{{ config.location_name }}</span>
                 </div>
-                <div class="setting-item">
-                    <span class="setting-label">Maximum Capacity:</span>
-                    <span class="setting-value">{{ config.max_capacity }} people</span>
+                <div class="summary-row">
+                    <span class="s-lbl">Maximum Capacity</span>
+                    <span class="s-val">{{ config.max_capacity }} people</span>
                 </div>
-                <div class="setting-item">
-                    <span class="setting-label">Active Camera:</span>
-                    <span class="setting-value" id="activeCameraDisplay">
-                        {% if config.camera_source == '0' or config.camera_source == 0 %}
-                            💻 Laptop Webcam
-                        {% elif config.camera_source == '1' %}
-                            🔌 External Webcam
-                        {% elif 'rtsp' in config.camera_source|string %}
-                            📹 CCTV Camera
-                        {% else %}
-                            📱 IP Camera
-                        {% endif %}
+                <div class="summary-row">
+                    <span class="s-lbl">Active Camera</span>
+                    <span class="s-val" id="activeCameraDisplay">
+                        {% if config.camera_source == '0' or config.camera_source == 0 %}💻 Laptop Webcam
+                        {% elif config.camera_source == '1' %}🔌 External Webcam
+                        {% elif 'rtsp' in config.camera_source|string %}📹 CCTV Camera
+                        {% else %}📱 IP Camera{% endif %}
                     </span>
                 </div>
             </div>
 
-            <h2>Edit Settings</h2>
-
+            <!-- Edit form -->
             <form action="/update_settings" method="POST">
                 <div class="form-group">
-                    <label for="location_name">📍 Location Name</label>
-                    <input
-                        type="text"
-                        id="location_name"
-                        name="location_name"
-                        value="{{ config.location_name }}"
-                        required
-                        placeholder="e.g., Canteen, Library, ATM"
-                    >
-                    <p class="help-text">Enter the name of the location you're monitoring</p>
+                    <label for="location_name">Location Name</label>
+                    <input type="text" id="location_name" name="location_name"
+                           value="{{ config.location_name }}"
+                           placeholder="e.g. Canteen, Library, ATM" required>
+                    <div class="hint">Name of the space you're monitoring</div>
                 </div>
 
                 <div class="form-group">
-                    <label for="max_capacity">👥 Maximum Capacity</label>
-                    <input
-                        type="number"
-                        id="max_capacity"
-                        name="max_capacity"
-                        value="{{ config.max_capacity }}"
-                        min="1"
-                        max="1000"
-                        required
-                        placeholder="e.g., 20, 50, 100"
-                    >
-                    <p class="help-text">Maximum number of people allowed in this location</p>
+                    <label for="max_capacity">Maximum Capacity</label>
+                    <input type="number" id="max_capacity" name="max_capacity"
+                           value="{{ config.max_capacity }}"
+                           min="1" max="1000"
+                           placeholder="e.g. 20, 50, 100" required>
+                    <div class="hint">Maximum number of people allowed at one time</div>
                 </div>
 
-                <div class="button-group">
+                <div class="btn-row">
                     <button type="submit" class="btn-primary">💾 Save Changes</button>
                     <button type="button" class="btn-secondary" onclick="window.location.href='/'">Cancel</button>
                 </div>
             </form>
         </div>
+    </div>
 
-        <!-- Single Camera Settings Card -->
-        <div class="card">
-            <h2>📷 Single Camera Settings</h2>
-            <p style="color: #6b7280; margin-bottom: 20px;">
-                Connect one camera for basic monitoring using
-                <code>crowd_counter.py</code>.
-            </p>
-
-            <!-- Quick Select Buttons -->
-            <div style="margin-bottom: 20px;">
-                <label>Quick Select:</label>
-                <div style="margin-top: 10px;">
-                    <button onclick="setCamera('0')" class="camera-btn"
-                        style="background: linear-gradient(135deg, #667eea, #764ba2);">
-                        💻 Laptop Webcam
-                    </button>
-                    <button onclick="setCamera('1')" class="camera-btn"
-                        style="background: linear-gradient(135deg, #f093fb, #f5576c);">
-                        🔌 External Webcam
-                    </button>
-                </div>
+    <!-- ── Single Camera ── -->
+    <div class="section">
+        <div class="section-head">
+            <div class="section-icon" style="background:rgba(6,182,212,.12);">📷</div>
+            <div>
+                <div class="section-title">Single Camera</div>
+                <div class="section-sub">Used with <code>crowd_counter.py</code></div>
             </div>
-
-            <!-- Phone Camera Section -->
-            <div class="camera-section">
-                <p>📱 Phone Camera (IP Webcam App)</p>
-                <span class="help-text">
-                    Install <strong>"IP Webcam"</strong> app on Android or
-                    <strong>"EpocCam"</strong> on iPhone.
-                    Make sure your phone and PC are on the same WiFi network.
-                </span>
-                <div class="camera-input-row">
-                    <input type="text" id="phoneIP"
-                        placeholder="e.g. 192.168.1.5  (only IP, no http://)"
-                        style="flex: 1;">
-                    <input type="text" id="phonePort"
-                        placeholder="Port" value="8080"
-                        style="width: 90px;">
-                    <button onclick="connectPhone()" class="btn-connect">
-                        📱 Connect
-                    </button>
-                </div>
-                <p class="help-text" style="margin-top: 8px;">
-                    💡 Open IP Webcam app → Start Server → Enter
-                    <strong>only the IP numbers</strong> shown on your phone screen
-                </p>
-            </div>
-
-            <!-- CCTV Camera Section -->
-            <div class="camera-section">
-                <p>📹 CCTV / IP Camera (RTSP)</p>
-                <span class="help-text">
-                    Enter your camera's RTSP URL.
-                </span>
-                <div class="camera-input-row">
-                    <input type="text" id="rtspURL"
-                        placeholder="rtsp://username:password@192.168.1.64/stream"
-                        style="flex: 1;">
-                    <button onclick="connectRTSP()" class="btn-connect">
-                        📹 Connect
-                    </button>
-                </div>
-                <p class="help-text" style="margin-top: 8px;">
-                    💡 Hikvision: rtsp://user:pass@ip/Streaming/Channels/101 |
-                    Dahua: rtsp://user:pass@ip/cam/realmonitor?channel=1
-                </p>
-            </div>
-
-            <!-- Status Message -->
-            <div id="cameraStatus" class="camera-status"></div>
         </div>
+        <div class="section-body">
 
-        <!-- Multi Camera Management Card -->
-        <div class="card">
-            <h2>🎥 Multi-Camera Management</h2>
-            <p style="color: #6b7280; margin-bottom: 20px;">
-                Add multiple cameras for one area. Run
-                <code>multi_camera.py</code> to use all cameras together.
-                Duplicate people across cameras are counted only once.
-            </p>
-
-            <!-- Camera List -->
-            <div id="cameraList" style="margin-bottom: 20px;">
-                <p style="color: #999; text-align: center; padding: 20px;">
-                    Loading cameras...
-                </p>
+            <!-- Quick select -->
+            <div class="form-group">
+                <label>Quick Select</label>
+                <div class="quick-btns">
+                    <button class="qbtn" onclick="setCamera('0')">💻 Laptop Webcam</button>
+                    <button class="qbtn" onclick="setCamera('1')">🔌 External Webcam</button>
+                </div>
             </div>
 
-            <!-- Add New Camera -->
-            <div style="background: #f8f9ff; padding: 20px; border-radius: 10px; border: 1px solid #e5e7eb;">
-                <p style="font-weight: 600; color: #374151; margin-bottom: 15px;">
-                    ➕ Add New Camera
-                </p>
+            <!-- Phone -->
+            <div class="cam-section">
+                <div class="cam-section-title">📱 Phone Camera (IP Webcam App)</div>
+                <div class="cam-section-sub">
+                    Install <strong>IP Webcam</strong> (Android) or <strong>EpocCam</strong> (iPhone).
+                    Phone and PC must be on the same WiFi.
+                </div>
+                <div class="input-row">
+                    <input type="text" id="phoneIP" placeholder="192.168.1.5  (IP only, no http://)">
+                    <input type="text" id="phonePort" placeholder="Port" value="8080" class="port-input">
+                    <button class="btn-connect" onclick="connectPhone()">Connect</button>
+                </div>
+                <div class="hint" style="margin-top:8px;">Open IP Webcam app → Start Server → enter the IP shown on screen</div>
+            </div>
 
-                <!-- Camera Name -->
-                <div class="form-group" style="margin-bottom: 15px;">
-                    <label style="font-size: 0.95em;">Camera Name</label>
-                    <input type="text" id="newCameraName"
-                        placeholder="e.g. Camera 1 - Left Corner"
-                        style="width: 100%; padding: 10px;
-                               border: 2px solid #ddd; border-radius: 8px;">
+            <!-- RTSP -->
+            <div class="cam-section">
+                <div class="cam-section-title">📹 CCTV / IP Camera (RTSP)</div>
+                <div class="cam-section-sub">Enter your camera's RTSP stream URL.</div>
+                <div class="input-row">
+                    <input type="text" id="rtspURL" placeholder="rtsp://username:password@192.168.1.64/stream">
+                    <button class="btn-connect" onclick="connectRTSP()">Connect</button>
+                </div>
+                <div class="hint" style="margin-top:8px;">
+                    Hikvision: rtsp://user:pass@ip/Streaming/Channels/101 &nbsp;|&nbsp;
+                    Dahua: rtsp://user:pass@ip/cam/realmonitor?channel=1
+                </div>
+            </div>
+
+            <div id="cameraStatus" class="cam-status"></div>
+        </div>
+    </div>
+
+    <!-- ── Multi Camera ── -->
+    <div class="section">
+        <div class="section-head">
+            <div class="section-icon" style="background:rgba(249,115,22,.12);">🎥</div>
+            <div>
+                <div class="section-title">Multi-Camera Management</div>
+                <div class="section-sub">Used with <code>multi_camera.py</code> — duplicates counted only once</div>
+            </div>
+        </div>
+        <div class="section-body">
+
+            <!-- Camera list -->
+            <div id="cameraList" style="margin-bottom:18px;">
+                <p style="color:var(--muted); text-align:center; padding:20px;">Loading cameras...</p>
+            </div>
+
+            <!-- Add camera -->
+            <div class="add-cam-box">
+                <div class="add-cam-title">➕ Add New Camera</div>
+
+                <div class="form-group">
+                    <label>Camera Name</label>
+                    <input type="text" id="newCameraName" placeholder="e.g. Camera 1 – Left Corner">
                 </div>
 
-                <!-- Camera Type -->
-                <div class="form-group" style="margin-bottom: 15px;">
-                    <label style="font-size: 0.95em;">Camera Type</label>
+                <div class="form-group">
+                    <label>Camera Type</label>
                     <select id="newCameraType" onchange="updateURLPreview()">
                         <option value="webcam0">💻 Laptop Webcam (Camera 0)</option>
                         <option value="webcam1">🔌 External Webcam (Camera 1)</option>
@@ -596,378 +533,272 @@
                     </select>
                 </div>
 
-                <!-- Phone IP Fields -->
-                <div id="phoneFields" style="display: none; margin-bottom: 15px;">
-                    <label style="font-size: 0.95em;">Phone IP Address</label>
-                    <div class="camera-input-row">
-                        <input type="text" id="newPhoneIP"
-                            placeholder="192.168.1.5"
-                            style="flex: 1;"
-                            oninput="updateURLPreview()">
-                        <input type="text" id="newPhonePort"
-                            placeholder="8080" value="8080"
-                            style="width: 90px;"
-                            oninput="updateURLPreview()">
+                <div id="phoneFields" style="display:none;" class="form-group">
+                    <label>Phone IP Address</label>
+                    <div class="input-row">
+                        <input type="text" id="newPhoneIP" placeholder="192.168.1.5" oninput="updateURLPreview()">
+                        <input type="text" id="newPhonePort" placeholder="8080" value="8080" class="port-input" oninput="updateURLPreview()">
                     </div>
                 </div>
 
-                <!-- RTSP URL Field -->
-                <div id="rtspFields" style="display: none; margin-bottom: 15px;">
-                    <label style="font-size: 0.95em;">RTSP URL</label>
+                <div id="rtspFields" style="display:none;" class="form-group">
+                    <label>RTSP URL</label>
                     <input type="text" id="newRtspURL"
-                        placeholder="rtsp://username:password@192.168.1.64/stream"
-                        style="width: 100%; padding: 10px;
-                               border: 2px solid #ddd; border-radius: 8px;"
-                        oninput="updateURLPreview()">
+                           placeholder="rtsp://username:password@192.168.1.64/stream"
+                           oninput="updateURLPreview()">
                 </div>
 
-                <!-- URL Preview -->
-                <div id="urlPreview"
-                    style="background: #e8f5e9; padding: 10px; border-radius: 8px;
-                           margin-bottom: 15px; display: none;">
-                    <span style="color: #6b7280; font-size: 0.85em;">Camera URL: </span>
-                    <span id="urlPreviewText"
-                        style="color: #065f46; font-weight: 600; font-size: 0.9em;
-                               word-break: break-all;"></span>
+                <div class="url-preview" id="urlPreview">
+                    📡 <span id="urlPreviewText"></span>
                 </div>
 
-                <!-- Add Button -->
-                <button onclick="addCamera()"
-                    style="width: 100%; padding: 12px;
-                           background: linear-gradient(135deg, #667eea, #764ba2);
-                           color: white; border: none; border-radius: 8px;
-                           font-size: 1em; font-weight: 600; cursor: pointer;
-                           transition: all 0.3s;"
-                    onmouseover="this.style.transform='translateY(-2px)'"
-                    onmouseout="this.style.transform='translateY(0)'">
-                    ➕ Add Camera
-                </button>
+                <button class="btn-add-cam" onclick="addCamera()">➕ Add Camera</button>
             </div>
 
-            <!-- Multi Camera Status -->
-            <div id="multiCameraStatus" class="camera-status" style="margin-top: 15px;"></div>
+            <div id="multiCameraStatus" class="cam-status" style="margin-top:14px;"></div>
         </div>
+    </div>
 
-        <!-- Info Card -->
-        <div class="card">
-            <h2>ℹ️ Important Information</h2>
-            <ul style="line-height: 2; color: #374151; margin-left: 20px;">
-                <li>Location and capacity changes take effect within <strong>10 seconds</strong></li>
-                <li>Camera changes take effect <strong>immediately</strong> (next frame)</li>
-                <li>Use <code>crowd_counter.py</code> for <strong>single camera</strong> monitoring</li>
-                <li>Use <code>multi_camera.py</code> for <strong>multiple cameras</strong> monitoring</li>
-                <li>Phone and PC must be on the <strong>same WiFi</strong> for phone camera</li>
-                <li>Enter <strong>only the IP address</strong> in phone fields — no http://</li>
-                <li>🟢 Green box = person counted | 🔴 Red box = duplicate, not counted</li>
+    <!-- ── Info ── -->
+    <div class="section">
+        <div class="section-head">
+            <div class="section-icon" style="background:rgba(234,179,8,.1);">ℹ️</div>
+            <div>
+                <div class="section-title">Important Notes</div>
+                <div class="section-sub">How the system works</div>
+            </div>
+        </div>
+        <div class="section-body">
+            <ul class="info-list">
+                <li><span class="ico">⏱</span><span>Location &amp; capacity changes apply within <strong>10 seconds</strong></span></li>
+                <li><span class="ico">⚡</span><span>Camera source changes apply <strong>immediately</strong> on the next frame</span></li>
+                <li><span class="ico">📷</span><span>Use <code>crowd_counter.py</code> for <strong>single camera</strong> monitoring</span></li>
+                <li><span class="ico">🎥</span><span>Use <code>multi_camera.py</code> for <strong>multiple cameras</strong> in one area</span></li>
+                <li><span class="ico">📶</span><span>Phone camera requires phone &amp; PC on the <strong>same WiFi network</strong></span></li>
+                <li><span class="ico">🔢</span><span>Enter <strong>only the IP address</strong> for phone fields — no http://</span></li>
+                <li><span class="ico">🟢</span><span><strong>Green box</strong> = person counted &nbsp;|&nbsp; <strong>Red box</strong> = duplicate, not counted</span></li>
             </ul>
         </div>
     </div>
 
-    <script>
-        // ── Single Camera Functions ──────────────────────────────────
+</div>
 
-        function setCamera(source) {
-            fetch('/update_camera', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ camera_source: source })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    const name = source === '0' ? '💻 Laptop Webcam' : '🔌 External Webcam';
-                    showStatus('success', '✅ Switched to ' + name + '!');
-                } else {
-                    showStatus('error', '❌ Failed to switch camera.');
-                }
-            })
-            .catch(() => showStatus('error', '❌ Connection error.'));
+<script>
+    // ── Single Camera ────────────────────────────────────────────
+
+    function setCamera(source) {
+        fetch('/update_camera', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ camera_source: source })
+        })
+        .then(r => r.json())
+        .then(data => {
+            const name = source === '0' ? '💻 Laptop Webcam' : '🔌 External Webcam';
+            showStatus('cameraStatus', data.success ? 'success' : 'error',
+                data.success ? `✅ Switched to ${name}!` : '❌ Failed to switch camera.');
+        })
+        .catch(() => showStatus('cameraStatus', 'error', '❌ Connection error.'));
+    }
+
+    function connectPhone() {
+        const rawIP = document.getElementById('phoneIP').value.trim();
+        const port  = document.getElementById('phonePort').value.trim() || '8080';
+        if (!rawIP) return showStatus('cameraStatus', 'error', '❌ Please enter your phone IP address.');
+        const cleanIP = rawIP.replace(/https?:\/\//g,'').split(':')[0].split('/')[0];
+        if (!/^\d+\.\d+\.\d+\.\d+$/.test(cleanIP))
+            return showStatus('cameraStatus', 'error', '❌ Invalid IP. Enter only numbers like 192.168.1.5');
+        const url = `http://${cleanIP}:${port}/video`;
+        fetch('/update_camera', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ camera_source: url })
+        })
+        .then(r => r.json())
+        .then(data => showStatus('cameraStatus', data.success ? 'success' : 'error',
+            data.success ? `✅ Phone camera connected! URL: ${url}` : '❌ Failed to connect.'))
+        .catch(() => showStatus('cameraStatus', 'error', '❌ Connection error.'));
+    }
+
+    function connectRTSP() {
+        const url = document.getElementById('rtspURL').value.trim();
+        if (!url) return showStatus('cameraStatus', 'error', '❌ Please enter the RTSP URL.');
+        if (!url.startsWith('rtsp://'))
+            return showStatus('cameraStatus', 'error', '❌ URL must start with rtsp://');
+        fetch('/update_camera', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ camera_source: url })
+        })
+        .then(r => r.json())
+        .then(data => showStatus('cameraStatus', data.success ? 'success' : 'error',
+            data.success ? '✅ CCTV camera connected!' : '❌ Failed to connect.'))
+        .catch(() => showStatus('cameraStatus', 'error', '❌ Connection error.'));
+    }
+
+    function showStatus(id, type, msg) {
+        const el = document.getElementById(id);
+        el.className = 'cam-status ' + type;
+        el.textContent = msg;
+        el.style.display = 'block';
+        setTimeout(() => el.style.display = 'none', 4500);
+    }
+
+    // Pre-fill camera fields from saved config
+    fetch('/get_camera').then(r => r.json()).then(data => {
+        const src = data.camera_source;
+        if (src && src !== '0' && src !== '1') {
+            if (src.startsWith('rtsp://')) {
+                document.getElementById('rtspURL').value = src;
+            } else if (src.includes('/video')) {
+                try {
+                    const clean = src.replace(/https?:\/\//g,'');
+                    document.getElementById('phoneIP').value   = clean.split(':')[0];
+                    document.getElementById('phonePort').value = clean.split(':')[1]?.split('/')[0] || '8080';
+                } catch(e) {}
+            }
         }
+    }).catch(() => {});
 
-        function connectPhone() {
-            const rawInput = document.getElementById('phoneIP').value.trim();
-            const port = document.getElementById('phonePort').value.trim() || '8080';
+    // ── Multi Camera ─────────────────────────────────────────────
 
-            if (!rawInput) {
-                showStatus('error', '❌ Please enter your phone IP address.');
+    function getCameraIcon(url) {
+        if (url === '0' || url === 0) return '💻';
+        if (url === '1' || url === 1) return '🔌';
+        if (String(url).startsWith('rtsp')) return '📹';
+        return '📱';
+    }
+
+    function formatURL(url) {
+        if (url === '0' || url === 0) return 'Laptop Webcam (Camera 0)';
+        if (url === '1' || url === 1) return 'External Webcam (Camera 1)';
+        return url;
+    }
+
+    function loadCameras() {
+        fetch('/get_cameras').then(r => r.json()).then(data => {
+            const list = document.getElementById('cameraList');
+            const cams = data.cameras;
+            if (!cams || cams.length === 0) {
+                list.innerHTML = `<div class="no-cameras">No cameras added yet.<br>Add your first camera below ↓</div>`;
                 return;
             }
-
-            let cleanIP = rawInput
-                .replace(/https?:\/\//g, '')
-                .split(':')[0]
-                .split('/')[0]
-                .trim();
-
-            if (!cleanIP.match(/^\d+\.\d+\.\d+\.\d+$/)) {
-                showStatus('error', '❌ Invalid IP. Enter only numbers like 192.168.1.5');
-                return;
-            }
-
-            const url = `http://${cleanIP}:${port}/video`;
-
-            fetch('/update_camera', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ camera_source: url })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    showStatus('success', '✅ Connected! URL: ' + url);
-                } else {
-                    showStatus('error', '❌ Failed to connect.');
-                }
-            })
-            .catch(() => showStatus('error', '❌ Connection error.'));
-        }
-
-        function connectRTSP() {
-            const url = document.getElementById('rtspURL').value.trim();
-            if (!url) {
-                showStatus('error', '❌ Please enter the RTSP URL.');
-                return;
-            }
-            if (!url.startsWith('rtsp://')) {
-                showStatus('error', '❌ RTSP URL must start with rtsp://');
-                return;
-            }
-            fetch('/update_camera', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ camera_source: url })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    showStatus('success', '✅ CCTV camera connected!');
-                } else {
-                    showStatus('error', '❌ Failed to connect.');
-                }
-            })
-            .catch(() => showStatus('error', '❌ Connection error.'));
-        }
-
-        function showStatus(type, message) {
-            const status = document.getElementById('cameraStatus');
-            status.className = 'camera-status ' + type;
-            status.textContent = message;
-            status.style.display = 'block';
-            setTimeout(() => status.style.display = 'none', 4000);
-        }
-
-        // Load current single camera on page load
-        fetch('/get_camera')
-            .then(res => res.json())
-            .then(data => {
-                const source = data.camera_source;
-                if (source && source !== '0' && source !== '1') {
-                    if (source.startsWith('rtsp://')) {
-                        document.getElementById('rtspURL').value = source;
-                    } else if (source.includes('/video')) {
-                        try {
-                            const cleanSource = source.replace(/https?:\/\//g, '');
-                            const cleanIP = cleanSource.split(':')[0];
-                            const cleanPort = cleanSource.split(':')[1]?.split('/')[0] || '8080';
-                            document.getElementById('phoneIP').value = cleanIP;
-                            document.getElementById('phonePort').value = cleanPort;
-                        } catch(e) {}
-                    }
-                }
-            })
-            .catch(() => {});
-
-        // ── Multi Camera Functions ───────────────────────────────────
-
-        function getCameraIcon(url) {
-            if (url === '0' || url === 0) return '💻';
-            if (url === '1' || url === 1) return '🔌';
-            if (String(url).startsWith('rtsp')) return '📹';
-            return '📱';
-        }
-
-        function formatURL(url) {
-            if (url === '0' || url === 0) return 'Laptop Webcam (Camera 0)';
-            if (url === '1' || url === 1) return 'External Webcam (Camera 1)';
-            return url;
-        }
-
-        function loadCameras() {
-            fetch('/get_cameras')
-                .then(res => res.json())
-                .then(data => {
-                    const list = document.getElementById('cameraList');
-                    const cameras = data.cameras;
-
-                    if (!cameras || cameras.length === 0) {
-                        list.innerHTML = `
-                            <div style="text-align: center; padding: 20px;
-                                        color: #999; background: #f9f9f9;
-                                        border-radius: 10px; border: 2px dashed #ddd;">
-                                No cameras added yet.<br>Add your first camera below!
-                            </div>`;
-                        return;
-                    }
-
-                    list.innerHTML = cameras.map(cam => `
-                        <div class="multi-cam-card ${cam.enabled ? 'active' : 'disabled'}">
-                            <div class="multi-cam-header">
-                                <div>
-                                    <span class="multi-cam-name">
-                                        ${getCameraIcon(cam.url)} ${cam.name}
-                                    </span>
-                                    <span class="multi-cam-badge"
-                                        style="background: ${cam.enabled ? '#10b981' : '#9ca3af'}">
-                                        ${cam.enabled ? '● Active' : '○ Disabled'}
-                                    </span>
-                                </div>
-                                <div class="multi-cam-actions">
-                                    <button class="btn-toggle"
-                                        onclick="toggleCamera(${cam.id})"
-                                        style="background: ${cam.enabled ? '#fef3c7' : '#d1fae5'};
-                                               color: ${cam.enabled ? '#92400e' : '#065f46'};">
-                                        ${cam.enabled ? '⏸ Disable' : '▶ Enable'}
-                                    </button>
-                                    <button class="btn-remove"
-                                        onclick="removeCamera(${cam.id}, '${cam.name}')">
-                                        🗑 Remove
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="multi-cam-url">
-                                📡 ${formatURL(cam.url)}
-                            </div>
+            list.innerHTML = cams.map(cam => `
+                <div class="cam-card ${cam.enabled ? 'active' : 'disabled'}">
+                    <div class="cam-card-header">
+                        <div>
+                            <span class="cam-card-name">${getCameraIcon(cam.url)} ${cam.name}</span>
+                            <span class="cam-badge ${cam.enabled ? 'on' : 'off'}">
+                                ${cam.enabled ? '● Active' : '○ Disabled'}
+                            </span>
                         </div>
-                    `).join('');
-                })
-                .catch(() => {
-                    document.getElementById('cameraList').innerHTML =
-                        '<p style="color: red; text-align: center;">❌ Error loading cameras. Make sure app.py is running.</p>';
-                });
+                        <div class="cam-card-actions">
+                            <button class="btn-toggle ${cam.enabled ? 'disable' : 'enable'}"
+                                    onclick="toggleCamera(${cam.id})">
+                                ${cam.enabled ? '⏸ Disable' : '▶ Enable'}
+                            </button>
+                            <button class="btn-remove" onclick="removeCamera(${cam.id}, '${cam.name}')">
+                                🗑 Remove
+                            </button>
+                        </div>
+                    </div>
+                    <div class="cam-card-url">📡 ${formatURL(cam.url)}</div>
+                </div>
+            `).join('');
+        }).catch(() => {
+            document.getElementById('cameraList').innerHTML =
+                '<p style="color:var(--red);text-align:center;">❌ Error loading cameras. Make sure app.py is running.</p>';
+        });
+    }
+
+    function updateURLPreview() {
+        const type = document.getElementById('newCameraType').value;
+        document.getElementById('phoneFields').style.display = type === 'phone' ? 'block' : 'none';
+        document.getElementById('rtspFields').style.display  = type === 'rtsp'  ? 'block' : 'none';
+
+        let url = '';
+        if      (type === 'webcam0') url = '0 (Laptop Webcam)';
+        else if (type === 'webcam1') url = '1 (External Webcam)';
+        else if (type === 'phone') {
+            const ip   = document.getElementById('newPhoneIP').value.trim().replace(/https?:\/\//g,'').split(':')[0].split('/')[0];
+            const port = document.getElementById('newPhonePort').value.trim() || '8080';
+            if (ip) url = `http://${ip}:${port}/video`;
+        }
+        else if (type === 'rtsp') url = document.getElementById('newRtspURL').value.trim();
+
+        const preview = document.getElementById('urlPreview');
+        if (url) {
+            preview.style.display = 'block';
+            document.getElementById('urlPreviewText').textContent = url;
+        } else {
+            preview.style.display = 'none';
+        }
+    }
+
+    function addCamera() {
+        const name = document.getElementById('newCameraName').value.trim();
+        const type = document.getElementById('newCameraType').value;
+        if (!name) return showStatus('multiCameraStatus', 'error', '❌ Please enter a camera name.');
+
+        let url = '';
+        if      (type === 'webcam0') url = '0';
+        else if (type === 'webcam1') url = '1';
+        else if (type === 'phone') {
+            const ip   = document.getElementById('newPhoneIP').value.trim().replace(/https?:\/\//g,'').split(':')[0].split('/')[0];
+            const port = document.getElementById('newPhonePort').value.trim() || '8080';
+            if (!/^\d+\.\d+\.\d+\.\d+$/.test(ip))
+                return showStatus('multiCameraStatus', 'error', '❌ Invalid IP address.');
+            url = `http://${ip}:${port}/video`;
+        }
+        else if (type === 'rtsp') {
+            url = document.getElementById('newRtspURL').value.trim();
+            if (!url.startsWith('rtsp://'))
+                return showStatus('multiCameraStatus', 'error', '❌ RTSP URL must start with rtsp://');
         }
 
-        function updateURLPreview() {
-            const type = document.getElementById('newCameraType').value;
-            const phoneFields = document.getElementById('phoneFields');
-            const rtspFields = document.getElementById('rtspFields');
-            const preview = document.getElementById('urlPreview');
-            const previewText = document.getElementById('urlPreviewText');
-
-            phoneFields.style.display = type === 'phone' ? 'block' : 'none';
-            rtspFields.style.display = type === 'rtsp' ? 'block' : 'none';
-
-            let url = '';
-            if (type === 'webcam0') url = '0 (Laptop Webcam)';
-            else if (type === 'webcam1') url = '1 (External Webcam)';
-            else if (type === 'phone') {
-                const rawIP = document.getElementById('newPhoneIP').value.trim();
-                const port = document.getElementById('newPhonePort').value.trim() || '8080';
-                const cleanIP = rawIP.replace(/https?:\/\//g, '').split(':')[0].split('/')[0];
-                if (cleanIP) url = `http://${cleanIP}:${port}/video`;
-            }
-            else if (type === 'rtsp') {
-                url = document.getElementById('newRtspURL').value.trim();
-            }
-
-            if (url) {
-                preview.style.display = 'block';
-                previewText.textContent = url;
+        fetch('/add_camera', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, url })
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                showStatus('multiCameraStatus', 'success', `✅ ${name} added!`);
+                document.getElementById('newCameraName').value = '';
+                document.getElementById('newPhoneIP').value    = '';
+                document.getElementById('newRtspURL').value    = '';
+                document.getElementById('urlPreview').style.display = 'none';
+                loadCameras();
             } else {
-                preview.style.display = 'none';
+                showStatus('multiCameraStatus', 'error', '❌ Failed to add camera.');
             }
-        }
+        })
+        .catch(() => showStatus('multiCameraStatus', 'error', '❌ Connection error.'));
+    }
 
-        function addCamera() {
-            const name = document.getElementById('newCameraName').value.trim();
-            const type = document.getElementById('newCameraType').value;
+    function toggleCamera(id) {
+        fetch('/toggle_camera', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id })
+        }).then(r => r.json()).then(d => { if (d.success) loadCameras(); });
+    }
 
-            if (!name) {
-                showMultiStatus('error', '❌ Please enter a camera name.');
-                return;
-            }
+    function removeCamera(id, name) {
+        if (!confirm(`Remove "${name}"? This cannot be undone.`)) return;
+        fetch('/remove_camera', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id })
+        })
+        .then(r => r.json())
+        .then(d => {
+            if (d.success) { showStatus('multiCameraStatus', 'success', '✅ Camera removed!'); loadCameras(); }
+        });
+    }
 
-            let url = '';
-            if (type === 'webcam0') url = '0';
-            else if (type === 'webcam1') url = '1';
-            else if (type === 'phone') {
-                const rawIP = document.getElementById('newPhoneIP').value.trim();
-                const port = document.getElementById('newPhonePort').value.trim() || '8080';
-                const cleanIP = rawIP
-                    .replace(/https?:\/\//g, '')
-                    .split(':')[0].split('/')[0];
-                if (!cleanIP.match(/^\d+\.\d+\.\d+\.\d+$/)) {
-                    showMultiStatus('error', '❌ Invalid IP address.');
-                    return;
-                }
-                url = `http://${cleanIP}:${port}/video`;
-            }
-            else if (type === 'rtsp') {
-                url = document.getElementById('newRtspURL').value.trim();
-                if (!url.startsWith('rtsp://')) {
-                    showMultiStatus('error', '❌ RTSP URL must start with rtsp://');
-                    return;
-                }
-            }
-
-            fetch('/add_camera', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name: name, url: url })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    showMultiStatus('success', `✅ ${name} added successfully!`);
-                    document.getElementById('newCameraName').value = '';
-                    document.getElementById('newPhoneIP').value = '';
-                    document.getElementById('newRtspURL').value = '';
-                    document.getElementById('urlPreview').style.display = 'none';
-                    loadCameras();
-                } else {
-                    showMultiStatus('error', '❌ Failed to add camera.');
-                }
-            })
-            .catch(() => showMultiStatus('error', '❌ Connection error.'));
-        }
-
-        function toggleCamera(id) {
-            fetch('/toggle_camera', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id: id })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) loadCameras();
-            });
-        }
-
-        function removeCamera(id, name) {
-            if (!confirm(`Remove "${name}"? This cannot be undone.`)) return;
-            fetch('/remove_camera', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id: id })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    showMultiStatus('success', '✅ Camera removed!');
-                    loadCameras();
-                }
-            });
-        }
-
-        function showMultiStatus(type, message) {
-            const status = document.getElementById('multiCameraStatus');
-            status.className = 'camera-status ' + type;
-            status.textContent = message;
-            status.style.display = 'block';
-            setTimeout(() => status.style.display = 'none', 4000);
-        }
-
-        // Load cameras when page opens
-        loadCameras();
-    </script>
+    loadCameras();
+</script>
 </body>
 </html>

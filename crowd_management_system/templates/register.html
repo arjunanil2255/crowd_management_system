@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register – CrowdSense</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+        :root {
+            --bg: #0d1117;
+            --card: #1c2333;
+            --border: #243047;
+            --text: #e6edf3;
+            --muted: #7d8faa;
+            --accent: #3b82f6;
+            --green: #22c55e;
+            --green-bg: rgba(34,197,94,.1);
+            --green-border: rgba(34,197,94,.25);
+            --red: #ef4444;
+            --red-bg: rgba(239,68,68,.1);
+            --red-border: rgba(239,68,68,.25);
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg); color: var(--text);
+            min-height: 100vh;
+            display: flex; align-items: center;
+            justify-content: center; padding: 20px;
+        }
+
+        body::before {
+            content:''; position:fixed; inset:0;
+            background:
+                radial-gradient(ellipse 70% 50% at 20% 20%, rgba(59,130,246,.1) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 40% at 80% 80%, rgba(34,197,94,.07) 0%, transparent 60%);
+            pointer-events:none; z-index:0;
+        }
+
+        .box {
+            position:relative; z-index:1;
+            width:100%; max-width:440px;
+            animation: up .5s ease both;
+        }
+
+        .brand {
+            display:flex; align-items:center;
+            justify-content:center; gap:12px;
+            margin-bottom:28px;
+        }
+
+        .brand-icon {
+            width:48px; height:48px;
+            background:linear-gradient(135deg,#3b82f6,#06b6d4);
+            border-radius:14px;
+            display:flex; align-items:center;
+            justify-content:center; font-size:24px;
+            box-shadow:0 4px 20px rgba(59,130,246,.3);
+        }
+
+        .brand-name {
+            font-family:'Syne',sans-serif;
+            font-size:1.6rem; font-weight:800; letter-spacing:-.5px;
+        }
+
+        .card {
+            background:var(--card); border:1px solid var(--border);
+            border-radius:20px; padding:36px 32px;
+        }
+
+        .card-title {
+            font-family:'Syne',sans-serif;
+            font-size:1.3rem; font-weight:700; margin-bottom:6px;
+        }
+
+        .card-sub { font-size:.85rem; color:var(--muted); margin-bottom:28px; }
+
+        .alert {
+            padding:12px 16px; border-radius:10px;
+            font-size:.85rem; margin-bottom:20px;
+            display:flex; align-items:center; gap:8px;
+        }
+
+        .alert-error   { background:var(--red-bg);   border:1px solid var(--red-border);   color:var(--red); }
+        .alert-success { background:var(--green-bg);  border:1px solid var(--green-border); color:var(--green); }
+
+        .form-group { margin-bottom:18px; }
+
+        label {
+            display:block; font-size:.78rem; font-weight:600;
+            color:var(--muted); text-transform:uppercase;
+            letter-spacing:.5px; margin-bottom:8px;
+        }
+
+        input, select {
+            width:100%; background:#161b22;
+            border:1px solid var(--border); color:var(--text);
+            border-radius:11px; padding:13px 16px;
+            font-size:.95rem; font-family:'DM Sans',sans-serif;
+            transition:border-color .2s, box-shadow .2s;
+            outline:none; appearance:none;
+        }
+
+        input:focus, select:focus {
+            border-color:var(--accent);
+            box-shadow:0 0 0 3px rgba(59,130,246,.15);
+        }
+
+        /* Role selector */
+        .role-selector {
+            display:grid; grid-template-columns:1fr 1fr;
+            gap:10px; margin-top:6px;
+        }
+
+        .role-option {
+            position:relative; cursor:pointer;
+        }
+
+        .role-option input[type="radio"] {
+            position:absolute; opacity:0; width:0; height:0;
+        }
+
+        .role-card {
+            display:flex; flex-direction:column;
+            align-items:center; gap:6px;
+            padding:16px 10px; border-radius:12px;
+            border:2px solid var(--border);
+            background:rgba(255,255,255,.02);
+            transition:all .2s; cursor:pointer;
+        }
+
+        .role-option input:checked + .role-card {
+            border-color:var(--accent);
+            background:var(--accent-bg);
+        }
+
+        .role-card-icon { font-size:1.5rem; }
+        .role-card-name { font-size:.85rem; font-weight:600; }
+        .role-card-desc { font-size:.72rem; color:var(--muted); text-align:center; }
+
+        .btn-register {
+            width:100%; padding:14px;
+            background:linear-gradient(135deg,#3b82f6,#2563eb);
+            color:white; border:none; border-radius:11px;
+            font-size:1rem; font-weight:600;
+            font-family:'DM Sans',sans-serif;
+            cursor:pointer; margin-top:8px;
+            box-shadow:0 4px 18px rgba(59,130,246,.3);
+            transition:transform .2s, box-shadow .2s;
+        }
+
+        .btn-register:hover {
+            transform:translateY(-2px);
+            box-shadow:0 6px 22px rgba(59,130,246,.4);
+        }
+
+        .login-link {
+            text-align:center; margin-top:20px;
+            font-size:.85rem; color:var(--muted);
+        }
+
+        .login-link a {
+            color:var(--accent); text-decoration:none; font-weight:600;
+        }
+
+        .note {
+            background:rgba(234,179,8,.08);
+            border:1px solid rgba(234,179,8,.2);
+            border-radius:10px; padding:12px 14px;
+            font-size:.8rem; color:#eab308;
+            margin-top:14px; display:none;
+        }
+
+        @keyframes up { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+    </style>
+</head>
+<body>
+<div class="box">
+
+    <div class="brand">
+        <div class="brand-icon">🎥</div>
+        <div class="brand-name">CrowdSense</div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">Create Account</div>
+        <div class="card-sub">Join CrowdSense to get started</div>
+
+        {% if error %}
+        <div class="alert alert-error">❌ {{ error }}</div>
+        {% endif %}
+
+        {% if success %}
+        <div class="alert alert-success">✅ {{ success }}</div>
+        {% endif %}
+
+        <form method="POST" action="/register">
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" name="name" placeholder="John Doe" required>
+            </div>
+
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" name="email" placeholder="you@example.com" required>
+            </div>
+
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" name="password" placeholder="••••••••" required>
+            </div>
+
+            <div class="form-group">
+                <label>Account Type</label>
+                <div class="role-selector">
+                    <label class="role-option">
+                        <input type="radio" name="role" value="user"
+                               checked onchange="showNote(this)">
+                        <div class="role-card">
+                            <span class="role-card-icon">👥</span>
+                            <span class="role-card-name">User</span>
+                            <span class="role-card-desc">View crowd status</span>
+                        </div>
+                    </label>
+                    <label class="role-option">
+                        <input type="radio" name="role" value="security"
+                               onchange="showNote(this)">
+                        <div class="role-card">
+                            <span class="role-card-icon">🚨</span>
+                            <span class="role-card-name">Security</span>
+                            <span class="role-card-desc">Monitor & get alerts</span>
+                        </div>
+                    </label>
+                </div>
+                <div class="note" id="securityNote">
+                    ⚠️ Security accounts require admin approval before you can login.
+                </div>
+            </div>
+
+            <button type="submit" class="btn-register">Create Account →</button>
+        </form>
+    </div>
+
+    <div class="login-link">
+        Already have an account? <a href="/login">Sign in</a>
+    </div>
+
+</div>
+
+<script>
+    function showNote(el) {
+        document.getElementById('securityNote').style.display =
+            el.value === 'security' ? 'block' : 'none';
+    }
+</script>
+</body>
+</html>

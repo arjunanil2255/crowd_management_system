@@ -1,0 +1,29 @@
+{
+    "users": [
+        {
+            "id": "1",
+            "name": "Admin",
+            "email": "admin@crowdsense.com",
+            "password": "scrypt:32768:8:1$T5D679oJcNYXok1A$5ab30dc6f886fd9af9dde1189b1af13c55660dc2a50cb4d7472a69bb1b51e63e6099b16e3789827e5eee8ab249dc4174c977f3cd0fc3d15cc36cef8e2c7fb7bb",
+            "role": "admin",
+            "status": "approved"
+        },
+        {
+            "id": "ae583bf7",
+            "name": "sc1",
+            "email": "sc1@gmail.com",
+            "password": "scrypt:32768:8:1$dD3EaVZUH1HFNtlo$ea3c5c1a21da01879274e0cc4008b1c3b9556cbd679668e6de9b1224876e7ff52a36efcbeb2fdfee8db221c9aeadd3047ee3325884b3e4d45fc71df289325dc1",
+            "role": "security",
+            "status": "approved"
+        },
+        {
+            "id": "c93d766f",
+            "name": "user1",
+            "email": "user1@gmail.com",
+            "password": "scrypt:32768:8:1$ZDriDCpf84SvGlgA$04e479da12f07cac1cf10d51b590d0fbd2e2a5b4c9abf48300594c4d89cec0d7e06eb34b9472c1f93c7bfa64f360dabe09271acd4ac7a3b31e66c4a9bf789048",
+            "role": "user",
+            "status": "approved"
+        }
+    ],
+    "pending_requests": []
+}

@@ -9,19 +9,16 @@ import numpy as np
 from datetime import datetime
 
 print("Loading YOLO model...")
-model = YOLO('yolov8n.pt')
+model = YOLO('yolov8l.pt')
 print("✅ YOLO loaded!")
 
 CONFIG_FILE = 'config.json'
 SAVE_INTERVAL = 5
 
 # ── Shared Data Between Cameras ─────────────────────────────────
-# Each camera stores its tracked people's color histograms here
-camera_data = {
-    1: {'tracks': {}, 'count': 0, 'frame': None},
-    2: {'tracks': {}, 'count': 0, 'frame': None},
-}
-data_lock = threading.Lock()  # prevents data conflicts between threads
+# Populated dynamically based on config
+camera_data = {}
+data_lock = threading.Lock()
 
 
 def load_config():
@@ -43,7 +40,6 @@ def get_color_histogram(frame, bbox):
     """Extract color histogram from person's bounding box - used for Re-ID"""
     try:
         x1, y1, x2, y2 = map(int, bbox)
-        # Clamp to frame boundaries
         x1 = max(0, x1)
         y1 = max(0, y1)
         x2 = min(frame.shape[1], x2)
@@ -56,12 +52,9 @@ def get_color_histogram(frame, bbox):
         if person_crop.size == 0:
             return None
 
-        # Convert to HSV for better color matching
         hsv = cv2.cvtColor(person_crop, cv2.COLOR_BGR2HSV)
-
-        # Calculate histogram
         hist = cv2.calcHist([hsv], [0, 1], None, [50, 60],
-                           [0, 180, 0, 256])
+                            [0, 180, 0, 256])
         cv2.normalize(hist, hist, 0, 1, cv2.NORM_MINMAX)
         return hist.flatten()
     except:
@@ -76,21 +69,23 @@ def compare_histograms(hist1, hist2):
         score = cv2.compareHist(
             hist1.reshape(-1, 1).astype(np.float32),
             hist2.reshape(-1, 1).astype(np.float32),
-            cv2.HISTCMP_CORREL  # correlation method
+            cv2.HISTCMP_CORREL
         )
-        return max(0, score)  # 1 = identical, 0 = completely different
+        return max(0, score)
     except:
         return 0
 
 
-def is_duplicate(hist, other_camera_id, threshold=0.85):
+def is_duplicate(hist, current_camera_id, threshold=0.85):
     """Check if person already counted in another camera"""
     with data_lock:
-        other_tracks = camera_data[other_camera_id]['tracks']
-        for track_id, other_hist in other_tracks.items():
-            similarity = compare_histograms(hist, other_hist)
-            if similarity > threshold:
-                return True  # Same person found in other camera
+        for cam_id, cam_info in camera_data.items():
+            if cam_id == current_camera_id:
+                continue
+            for track_id, other_hist in cam_info['tracks'].items():
+                similarity = compare_histograms(hist, other_hist)
+                if similarity > threshold:
+                    return True
     return False
 
 
@@ -99,22 +94,26 @@ def camera_thread(camera_id, camera_url, camera_name):
 
     print(f"📷 Starting {camera_name}...")
 
-    # Initialize separate DeepSORT tracker for each camera
     tracker = DeepSort(
         max_age=30,
         n_init=5,
         max_iou_distance=0.7
     )
 
-    # Connect to camera
     source = int(camera_url) if str(camera_url).isdigit() else camera_url
     cap = cv2.VideoCapture(source)
+    cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
 
     if not cap.isOpened():
         print(f"❌ Cannot open {camera_name}")
         return
 
     print(f"✅ {camera_name} connected!")
+
+    frame_count = 0
+    tracks = []
+    local_count = 0
+    current_tracks = {}
 
     while True:
         ret, frame = cap.read()
@@ -123,32 +122,42 @@ def camera_thread(camera_id, camera_url, camera_name):
             time.sleep(2)
             cap.release()
             cap = cv2.VideoCapture(source)
+            cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
             continue
 
-        # YOLO Detection
-        results = model(frame, verbose=False, classes=[0], conf=0.6)
+        frame_count += 1
 
-        detections = []
-        for result in results:
-            for box in result.boxes:
-                x1, y1, x2, y2 = map(int, box.xyxy[0])
-                w = x2 - x1
-                h = y2 - y1
-                conf = float(box.conf[0])
-                aspect_ratio = h / w if w > 0 else 0
+        if frame_count % 2 == 1:
+            # YOLO Detection
+            results = model(frame, verbose=False, classes=[0], conf=0.5)
 
-                if h > 120 and w > 50 and conf > 0.65 and aspect_ratio > 1.2:
-                    detections.append(([x1, y1, w, h], conf, 0))
+            detections = []
+            for result in results:
+                for box in result.boxes:
+                    x1, y1, x2, y2 = map(int, box.xyxy[0])
+                    w = x2 - x1
+                    h = y2 - y1
+                    conf = float(box.conf[0])
 
-        # DeepSORT Tracking
-        tracks = tracker.update_tracks(detections, frame=frame)
+                    if h > 50 and w > 30 and conf > 0.5:
+                        detections.append(([x1, y1, w, h], conf, 0))
 
-        # Determine other camera id for duplicate check
-        other_camera_id = 2 if camera_id == 1 else 1
+            # DeepSORT Tracking
+            tracks = tracker.update_tracks(detections, frame=frame)
 
-        local_count = 0
-        current_tracks = {}
+            # Recalculate local_count and current_tracks
+            local_count = 0
+            current_tracks_temp = {}
+            for track in tracks:
+                if track.is_confirmed():
+                    local_count += 1
+                    ltrb = track.to_ltrb()
+                    hist = get_color_histogram(frame, ltrb)
+                    current_tracks_temp[int(track.track_id)] = hist
 
+            current_tracks = current_tracks_temp
+
+        # Render tracks on frame
         for track in tracks:
             if not track.is_confirmed():
                 continue
@@ -157,42 +166,35 @@ def camera_thread(camera_id, camera_url, camera_name):
             ltrb = track.to_ltrb()
             x1, y1, x2, y2 = map(int, ltrb)
 
-            # Get color histogram for this person
-            hist = get_color_histogram(frame, (x1, y1, x2, y2))
-            current_tracks[track_id] = hist
-
-            # Check if same person is in other camera
-            duplicate = is_duplicate(hist, other_camera_id)
+            hist = current_tracks.get(track_id)
+            duplicate = is_duplicate(hist, camera_id)
 
             if duplicate:
-                # Draw RED dashed box = duplicate, not counted
                 cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 255), 2)
                 cv2.putText(frame, f"ID:{track_id} [DUP]",
-                           (x1, y1 - 5),
-                           cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+                            (x1, y1 - 5),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
             else:
-                # Draw GREEN box = unique person, counted
-                local_count += 1
                 color_index = track_id % 5
-                colors = [(0,255,0),(255,165,0),(0,200,255),(255,0,255),(0,255,128)]
+                colors = [(0, 255, 0), (255, 165, 0), (0, 200, 255),
+                          (255, 0, 255), (0, 255, 128)]
                 color = colors[color_index]
 
                 cv2.rectangle(frame, (x1, y1), (x2, y2), color, 2)
                 cv2.putText(frame, f"ID:{track_id}",
-                           (x1, y1 - 5),
-                           cv2.FONT_HERSHEY_SIMPLEX, 0.6, color, 2)
+                            (x1, y1 - 5),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.6, color, 2)
 
         # Update shared camera data
         with data_lock:
             camera_data[camera_id]['tracks'] = current_tracks
             camera_data[camera_id]['count'] = local_count
-            camera_data[camera_id]['frame'] = frame.copy()
 
-        # Show individual camera window
+        # Show camera window
         cv2.putText(frame, f"{camera_name}: {local_count} people",
-                   (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
+                    (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
         cv2.putText(frame, "GREEN=Counted  RED=Duplicate",
-                   (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (200, 200, 200), 1)
+                    (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (200, 200, 200), 1)
 
         cv2.imshow(f'{camera_name}', frame)
 
@@ -208,6 +210,11 @@ def save_combined_data(location_name, max_capacity, last_save_time):
     if current_time - last_save_time >= SAVE_INTERVAL:
         with data_lock:
             total_count = sum(camera_data[cam]['count'] for cam in camera_data)
+            # Build camera counts dynamically
+            cam_counts = {
+                f"camera_{cam}_count": camera_data[cam]['count']
+                for cam in camera_data
+            }
 
         occupancy_percent = (total_count / max_capacity) * 100 if max_capacity > 0 else 0
 
@@ -229,17 +236,18 @@ def save_combined_data(location_name, max_capacity, last_save_time):
             "max_capacity": max_capacity,
             "occupancy_percent": round(occupancy_percent, 1),
             "status": status,
-            "camera_1_count": camera_data[1]['count'],
-            "camera_2_count": camera_data[2]['count']
+            **cam_counts  # adds camera_1_count, camera_2_count etc dynamically
         }
 
         try:
             with open('crowd_data.json', 'a') as f:
                 f.write(json.dumps(data) + '\n')
-            print(f"✓ Total: {total_count} people "
-                  f"(Cam1: {camera_data[1]['count']} | "
-                  f"Cam2: {camera_data[2]['count']}) "
-                  f"- {status}")
+            # Dynamic print for any number of cameras
+            cam_info = " | ".join([
+                f"Cam{cam}: {camera_data[cam]['count']}"
+                for cam in camera_data
+            ])
+            print(f"✓ Total: {total_count} people ({cam_info}) - {status}")
         except Exception as e:
             print(f"✗ Error saving: {e}")
 
@@ -253,12 +261,22 @@ location_name = config.get("location_name", "Canteen")
 max_capacity = config.get("max_capacity", 20)
 cameras = config.get("cameras", [])
 
+# ✅ Initialize camera_data dynamically based on enabled cameras
+for cam in cameras:
+    if cam.get("enabled", True):
+        camera_data[cam['id']] = {'tracks': {}, 'count': 0, 'frame': None}
+
 print("=" * 60)
 print(f"Location: {location_name}")
 print(f"Max Capacity: {max_capacity}")
 print(f"Cameras: {len(cameras)}")
 print("GREEN box = Counted | RED box = Duplicate (not counted)")
 print("=" * 60)
+
+if len(cameras) == 0:
+    print("❌ No cameras found in config.json!")
+    print("👉 Go to settings page and add cameras first.")
+    exit()
 
 # Start each camera in its own thread
 threads = []
@@ -271,9 +289,8 @@ for cam in cameras:
         )
         t.start()
         threads.append(t)
-        time.sleep(1)  # small delay between camera starts
+        time.sleep(1)
 
-# Main loop - just saves combined data
 last_save_time = time.time()
 print("\n✅ All cameras running! Press Q in any camera window to quit.\n")
 

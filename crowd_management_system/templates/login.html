@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login – CrowdSense</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+        :root {
+            --bg: #0d1117;
+            --card: #1c2333;
+            --border: #243047;
+            --text: #e6edf3;
+            --muted: #7d8faa;
+            --accent: #3b82f6;
+            --accent-bg: rgba(59,130,246,.12);
+            --green: #22c55e;
+            --red: #ef4444;
+            --red-bg: rgba(239,68,68,.1);
+            --red-border: rgba(239,68,68,.25);
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        body::before {
+            content:'';
+            position:fixed; inset:0;
+            background:
+                radial-gradient(ellipse 70% 50% at 20% 20%, rgba(59,130,246,.1) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 40% at 80% 80%, rgba(34,197,94,.07) 0%, transparent 60%);
+            pointer-events:none; z-index:0;
+        }
+
+        .login-box {
+            position: relative; z-index:1;
+            width: 100%; max-width: 420px;
+            animation: up .5s ease both;
+        }
+
+        /* Brand */
+        .brand {
+            display: flex; align-items: center;
+            justify-content: center; gap: 12px;
+            margin-bottom: 32px;
+        }
+
+        .brand-icon {
+            width: 48px; height: 48px;
+            background: linear-gradient(135deg,#3b82f6,#06b6d4);
+            border-radius: 14px;
+            display: flex; align-items: center;
+            justify-content: center; font-size: 24px;
+            box-shadow: 0 4px 20px rgba(59,130,246,.3);
+        }
+
+        .brand-name {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.6rem; font-weight: 800;
+            letter-spacing: -.5px;
+        }
+
+        /* Card */
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 36px 32px;
+        }
+
+        .card-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.3rem; font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .card-sub {
+            font-size: .85rem; color: var(--muted);
+            margin-bottom: 28px;
+        }
+
+        /* Error */
+        .error-box {
+            background: var(--red-bg);
+            border: 1px solid var(--red-border);
+            color: var(--red);
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-size: .85rem;
+            margin-bottom: 20px;
+            display: flex; align-items: center; gap: 8px;
+        }
+
+        /* Form */
+        .form-group { margin-bottom: 18px; }
+
+        label {
+            display: block;
+            font-size: .78rem; font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase; letter-spacing: .5px;
+            margin-bottom: 8px;
+        }
+
+        input {
+            width: 100%;
+            background: #161b22;
+            border: 1px solid var(--border);
+            color: var(--text);
+            border-radius: 11px;
+            padding: 13px 16px;
+            font-size: .95rem;
+            font-family: 'DM Sans', sans-serif;
+            transition: border-color .2s, box-shadow .2s;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(59,130,246,.15);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white; border: none; border-radius: 11px;
+            font-size: 1rem; font-weight: 600;
+            font-family: 'DM Sans', sans-serif;
+            cursor: pointer; margin-top: 8px;
+            box-shadow: 0 4px 18px rgba(59,130,246,.3);
+            transition: transform .2s, box-shadow .2s;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 22px rgba(59,130,246,.4);
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: .85rem;
+            color: var(--muted);
+        }
+
+        .register-link a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .register-link a:hover { text-decoration: underline; }
+
+        /* Role badges */
+        .role-info {
+            display: flex; gap: 8px;
+            margin-top: 24px; flex-wrap: wrap;
+        }
+
+        .role-badge {
+            flex: 1; min-width: 80px;
+            padding: 10px 8px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: .72rem; font-weight: 600;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,.03);
+        }
+
+        .role-badge .role-icon { font-size: 1.2rem; display: block; margin-bottom: 4px; }
+
+        @keyframes up { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+    </style>
+</head>
+<body>
+<div class="login-box">
+
+    <div class="brand">
+        <div class="brand-icon">🎥</div>
+        <div class="brand-name">CrowdSense</div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">Welcome back</div>
+        <div class="card-sub">Sign in to access your dashboard</div>
+
+        {% if error %}
+        <div class="error-box">❌ {{ error }}</div>
+        {% endif %}
+
+        <form method="POST" action="/login">
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email"
+                       placeholder="you@example.com" required
+                       autocomplete="email">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password"
+                       placeholder="••••••••" required>
+            </div>
+
+            <button type="submit" class="btn-login">Sign In →</button>
+        </form>
+
+        <div class="role-info">
+            <div class="role-badge">
+                <span class="role-icon">🛡️</span>Admin
+            </div>
+            <div class="role-badge">
+                <span class="role-icon">🚨</span>Security
+            </div>
+            <div class="role-badge">
+                <span class="role-icon">👥</span>User
+            </div>
+        </div>
+    </div>
+
+    <div class="register-link">
+        Don't have an account?
+        <a href="/register">Register here</a>
+    </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Dashboard – CrowdSense</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+        :root {
+            --bg: #0d1117;
+            --card: #1c2333;
+            --border: #243047;
+            --text: #e6edf3;
+            --muted: #7d8faa;
+            --radius: 18px;
+            --green: #22c55e;
+            --green-bg: rgba(34,197,94,.12);
+            --green-border: rgba(34,197,94,.25);
+            --yellow: #eab308;
+            --yellow-bg: rgba(234,179,8,.12);
+            --yellow-border: rgba(234,179,8,.25);
+            --orange: #f97316;
+            --orange-bg: rgba(249,115,22,.12);
+            --orange-border: rgba(249,115,22,.25);
+            --red: #ef4444;
+            --red-bg: rgba(239,68,68,.12);
+            --red-border: rgba(239,68,68,.25);
+            --accent: #3b82f6;
+            --accent-bg: rgba(59,130,246,.12);
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 28px 18px 64px;
+        }
+
+        body::before {
+            content:'';
+            position:fixed; inset:0;
+            background:
+                radial-gradient(ellipse 70% 50% at 10% 0%, rgba(239,68,68,.08) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 40% at 90% 100%, rgba(59,130,246,.06) 0%, transparent 60%);
+            pointer-events:none; z-index:0;
+        }
+
+        .wrapper {
+            position:relative; z-index:1;
+            max-width:980px; margin:0 auto;
+        }
+
+        /* ── Header ── */
+        header {
+            display:flex; align-items:center;
+            justify-content:space-between;
+            margin-bottom:28px; flex-wrap:wrap; gap:14px;
+            animation: up .5s ease both;
+        }
+
+        .brand { display:flex; align-items:center; gap:13px; }
+
+        .brand-icon {
+            width:46px; height:46px;
+            background:linear-gradient(135deg,#ef4444,#f97316);
+            border-radius:13px;
+            display:flex; align-items:center; justify-content:center;
+            font-size:22px;
+            box-shadow:0 4px 20px rgba(239,68,68,.3);
+        }
+
+        .brand-text h1 { font-family:'Syne',sans-serif; font-size:1.2rem; font-weight:800; letter-spacing:-.4px; }
+        .brand-text p  { font-size:.72rem; color:var(--muted); text-transform:uppercase; letter-spacing:.6px; margin-top:1px; }
+
+        .h-actions { display:flex; align-items:center; gap:10px; }
+
+        .live-pill {
+            display:flex; align-items:center; gap:7px;
+            background:rgba(239,68,68,.1);
+            border:1px solid rgba(239,68,68,.22);
+            color:var(--red);
+            border-radius:50px; padding:7px 15px;
+            font-size:.78rem; font-weight:600; letter-spacing:.3px;
+        }
+
+        .dot { width:7px; height:7px; background:currentColor; border-radius:50%; animation:blink 1.8s infinite; }
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+        .logout-btn {
+            display:flex; align-items:center; gap:7px;
+            background:var(--card); border:1px solid rgba(239,68,68,.3);
+            color:#ef4444; border-radius:11px;
+            padding:8px 18px; font-size:.82rem; font-weight:500;
+            text-decoration:none; transition:border-color .2s, background .2s;
+        }
+        .logout-btn:hover { border-color:#ef4444; background:var(--red-bg); }
+
+        /* ── Alert Banner ── */
+        .alert-banner {
+            border-radius:var(--radius);
+            padding:24px 28px;
+            margin-bottom:20px;
+            display:none;
+            animation: up .4s ease both;
+            position:relative; overflow:hidden;
+        }
+
+        .alert-banner.show { display:block; }
+
+        .alert-banner.critical {
+            background:var(--red-bg);
+            border:2px solid var(--red-border);
+        }
+
+        .alert-banner.warning {
+            background:var(--orange-bg);
+            border:2px solid var(--orange-border);
+        }
+
+        .alert-banner-inner {
+            display:flex; align-items:center;
+            justify-content:space-between; flex-wrap:wrap; gap:14px;
+        }
+
+        .alert-banner-left { display:flex; align-items:center; gap:16px; }
+        .alert-icon { font-size:2.2rem; }
+
+        .alert-title {
+            font-family:'Syne',sans-serif; font-size:1.2rem; font-weight:800;
+        }
+
+        .alert-subtitle { font-size:.85rem; color:var(--muted); margin-top:3px; }
+
+        .btn-acknowledge {
+            padding:11px 24px;
+            background:var(--red); color:white;
+            border:none; border-radius:11px;
+            font-size:.9rem; font-weight:600;
+            font-family:'DM Sans',sans-serif;
+            cursor:pointer; transition:all .2s;
+        }
+        .btn-acknowledge:hover { transform:translateY(-2px); background:#dc2626; }
+
+        /* ── Status Grid ── */
+        .status-grid {
+            display:grid;
+            grid-template-columns:repeat(auto-fit, minmax(220px,1fr));
+            gap:16px; margin-bottom:20px;
+            animation: up .5s .08s ease both;
+        }
+
+        .stat-card {
+            background:var(--card); border:1px solid var(--border);
+            border-radius:var(--radius); padding:22px;
+            display:flex; flex-direction:column; gap:8px;
+            transition:border-color .2s;
+        }
+
+        .stat-icon {
+            width:40px; height:40px; border-radius:11px;
+            display:flex; align-items:center; justify-content:center; font-size:20px;
+        }
+
+        .stat-lbl { font-size:.73rem; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; font-weight:500; }
+        .stat-val { font-family:'Syne',sans-serif; font-size:2rem; font-weight:800; line-height:1; }
+        .stat-sub { font-size:.76rem; color:var(--muted); }
+
+        /* ── Progress bar ── */
+        .prog-card {
+            background:var(--card); border:1px solid var(--border);
+            border-radius:var(--radius); padding:22px 24px;
+            margin-bottom:20px;
+            animation: up .5s .14s ease both;
+        }
+
+        .prog-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
+        .prog-title { font-family:'Syne',sans-serif; font-size:.95rem; font-weight:700; }
+        .prog-pct { font-family:'Syne',sans-serif; font-size:1.1rem; font-weight:700; transition:color .4s; }
+
+        .prog-track { width:100%; height:14px; background:var(--border); border-radius:50px; overflow:hidden; }
+        .prog-fill {
+            height:100%; border-radius:50px;
+            transition:width 1s cubic-bezier(.4,0,.2,1), background .5s, box-shadow .5s;
+        }
+
+        .prog-legend { display:flex; justify-content:space-between; margin-top:8px; font-size:.7rem; color:var(--muted); }
+
+        /* ── Alert Log ── */
+        .log-card {
+            background:var(--card); border:1px solid var(--border);
+            border-radius:var(--radius); padding:22px 24px;
+            animation: up .5s .2s ease both;
+        }
+
+        .log-title {
+            font-family:'Syne',sans-serif; font-size:.95rem; font-weight:700;
+            margin-bottom:16px;
+            display:flex; align-items:center; justify-content:space-between;
+        }
+
+        .btn-clear {
+            padding:6px 14px; border-radius:8px;
+            background:var(--red-bg); border:1px solid var(--red-border);
+            color:var(--red); font-size:.78rem; font-weight:600;
+            font-family:'DM Sans',sans-serif; cursor:pointer;
+            transition:all .2s;
+        }
+        .btn-clear:hover { transform:translateY(-1px); }
+
+        .log-list { display:flex; flex-direction:column; gap:10px; max-height:340px; overflow-y:auto; }
+
+        .log-item {
+            display:flex; align-items:flex-start; gap:12px;
+            padding:14px 16px; border-radius:12px;
+            border-left:3px solid;
+        }
+
+        .log-item.critical { background:var(--red-bg); border-color:var(--red); }
+        .log-item.warning  { background:var(--orange-bg); border-color:var(--orange); }
+        .log-item.normal   { background:var(--green-bg); border-color:var(--green); }
+
+        .log-icon { font-size:1.1rem; flex-shrink:0; }
+        .log-msg  { font-size:.85rem; font-weight:500; line-height:1.4; }
+        .log-time { font-size:.75rem; color:var(--muted); margin-top:3px; }
+
+        .no-alerts {
+            text-align:center; padding:30px;
+            color:var(--muted); font-size:.88rem;
+            background:rgba(34,197,94,.05);
+            border:1px dashed var(--green-border);
+            border-radius:12px;
+        }
+
+        /* ── Sound toggle ── */
+        .sound-toggle {
+            display:flex; align-items:center; gap:10px;
+            background:var(--card); border:1px solid var(--border);
+            border-radius:12px; padding:14px 18px;
+            margin-bottom:20px;
+            animation: up .5s .05s ease both;
+        }
+
+        .toggle-switch { position:relative; width:44px; height:24px; flex-shrink:0; }
+        .toggle-switch input { opacity:0; width:0; height:0; }
+
+        .toggle-slider {
+            position:absolute; inset:0; cursor:pointer;
+            background:var(--border); border-radius:50px; transition:.3s;
+        }
+
+        .toggle-slider:before {
+            content:''; position:absolute;
+            width:18px; height:18px; border-radius:50%;
+            background:white; left:3px; top:3px; transition:.3s;
+        }
+
+        input:checked + .toggle-slider { background:var(--green); }
+        input:checked + .toggle-slider:before { transform:translateX(20px); }
+
+        .sound-lbl { font-size:.88rem; font-weight:500; }
+        .sound-sub { font-size:.75rem; color:var(--muted); }
+
+        @keyframes up { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
+
+        @keyframes pulse-red {
+            0%,100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); }
+            50%      { box-shadow: 0 0 0 12px rgba(239,68,68,.15); }
+        }
+
+        .alert-banner.critical { animation: pulse-red 2s infinite; }
+    </style>
+</head>
+<body>
+<div class="wrapper">
+
+    <!-- Header -->
+    <header>
+        <div class="brand">
+            <div class="brand-icon">🚨</div>
+            <div class="brand-text">
+                <h1>Security Dashboard</h1>
+                <p>On-Duty Staff Interface</p>
+            </div>
+        </div>
+        <div class="h-actions">
+            <div class="live-pill"><span class="dot"></span>MONITORING</div>
+            <a href="/logout" class="logout-btn">🚪 Logout</a>
+        </div>
+    </header>
+
+    <!-- Sound Toggle -->
+    <div class="sound-toggle">
+        <label class="toggle-switch">
+            <input type="checkbox" id="soundToggle" checked>
+            <span class="toggle-slider"></span>
+        </label>
+        <div>
+            <div class="sound-lbl">🔊 Alert Sound</div>
+            <div class="sound-sub">Play alarm when capacity is exceeded</div>
+        </div>
+        <div style="margin-left:auto; font-size:.82rem; color:var(--muted);" id="soundStatus">
+            Sound ON
+        </div>
+    </div>
+
+    <!-- Alert Banner -->
+    <div class="alert-banner" id="alertBanner">
+        <div class="alert-banner-inner">
+            <div class="alert-banner-left">
+                <div class="alert-icon" id="alertIcon">🚨</div>
+                <div>
+                    <div class="alert-title" id="alertTitle">CAPACITY EXCEEDED!</div>
+                    <div class="alert-subtitle" id="alertSubtitle">Immediate action required</div>
+                </div>
+            </div>
+            <button class="btn-acknowledge" onclick="acknowledgeAlert()">
+                ✓ Acknowledge
+            </button>
+        </div>
+    </div>
+
+    <!-- Status Grid -->
+    <div class="status-grid">
+        <div class="stat-card" id="card-count">
+            <div class="stat-icon" style="background:var(--accent-bg);">👥</div>
+            <div class="stat-lbl">Current Count</div>
+            <div class="stat-val" id="secCount">--</div>
+            <div class="stat-sub" id="secCountSub">of -- max</div>
+        </div>
+        <div class="stat-card" id="card-status">
+            <div class="stat-icon" style="background:var(--green-bg);">📊</div>
+            <div class="stat-lbl">Status</div>
+            <div class="stat-val" id="secStatus" style="font-size:1.3rem;">--</div>
+            <div class="stat-sub" id="secOccupancy">--% occupied</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon" style="background:var(--yellow-bg);">📍</div>
+            <div class="stat-lbl">Location</div>
+            <div class="stat-val" id="secLocation" style="font-size:1.1rem;">--</div>
+            <div class="stat-sub" id="secTimestamp">Last update: --</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon" style="background:var(--red-bg);">🔔</div>
+            <div class="stat-lbl">Alerts Today</div>
+            <div class="stat-val" id="secAlertCount">0</div>
+            <div class="stat-sub">triggered alerts</div>
+        </div>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="prog-card">
+        <div class="prog-head">
+            <div class="prog-title">Capacity Usage</div>
+            <div class="prog-pct" id="secProgPct">0%</div>
+        </div>
+        <div class="prog-track">
+            <div class="prog-fill" id="secProgFill" style="width:0%; background:var(--green);"></div>
+        </div>
+        <div class="prog-legend">
+            <span>Empty</span><span>25%</span><span>50%</span><span>75%</span><span>Full</span>
+        </div>
+    </div>
+
+    <!-- Alert Log -->
+    <div class="log-card">
+        <div class="log-title">
+            🔔 Alert Log
+            <button class="btn-clear" onclick="clearLog()">🗑 Clear</button>
+        </div>
+        <div class="log-list" id="alertLog">
+            <div class="no-alerts">✅ No alerts yet. System is monitoring.</div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    let alertLog = [];
+    let alertCount = 0;
+    let acknowledged = false;
+    let lastStatus = '';
+    let soundEnabled = true;
+    let alarmPlaying = false;
+
+    document.getElementById('soundToggle').addEventListener('change', function() {
+        soundEnabled = this.checked;
+        document.getElementById('soundStatus').textContent = soundEnabled ? 'Sound ON' : 'Sound OFF';
+        if (!soundEnabled) stopAlarm();
+    });
+
+    function playAlarm() {
+        if (!soundEnabled || alarmPlaying) return;
+        try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            function beep() {
+                const osc  = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.frequency.value = 880;
+                osc.type = 'square';
+                gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+                osc.start(ctx.currentTime);
+                osc.stop(ctx.currentTime + 0.4);
+            }
+            beep();
+            setTimeout(beep, 500);
+            setTimeout(beep, 1000);
+            alarmPlaying = true;
+            setTimeout(() => alarmPlaying = false, 2000);
+        } catch(e) {
+            console.warn('Audio not supported:', e);
+        }
+    }
+
+    function stopAlarm() { alarmPlaying = false; }
+
+    function acknowledgeAlert() {
+        acknowledged = true;
+        document.getElementById('alertBanner').classList.remove('show');
+        stopAlarm();
+        addToLog('normal', '✅', 'Alert acknowledged by security staff', new Date().toLocaleTimeString());
+    }
+
+    function clearLog() {
+        alertLog = [];
+        alertCount = 0;
+        document.getElementById('secAlertCount').textContent = '0';
+        document.getElementById('alertLog').innerHTML =
+            '<div class="no-alerts">✅ No alerts yet. System is monitoring.</div>';
+    }
+
+    function addToLog(type, icon, msg, time) {
+        alertLog.unshift({ type, icon, msg, time });
+        if (alertLog.length > 50) alertLog.pop();
+        renderLog();
+    }
+
+    function renderLog() {
+        const log = document.getElementById('alertLog');
+        if (alertLog.length === 0) {
+            log.innerHTML = '<div class="no-alerts">✅ No alerts yet. System is monitoring.</div>';
+            return;
+        }
+        log.innerHTML = alertLog.map(a => `
+            <div class="log-item ${a.type}">
+                <div class="log-icon">${a.icon}</div>
+                <div>
+                    <div class="log-msg">${a.msg}</div>
+                    <div class="log-time">${a.time}</div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function getBarColor(pct) {
+        if (pct >= 100) return '#ef4444';
+        if (pct >= 75)  return '#f97316';
+        if (pct >= 50)  return '#eab308';
+        return '#22c55e';
+    }
+
+    function updateSecurity() {
+        fetch('/api/latest')
+            .then(r => r.json())
+            .then(data => {
+                if (!data || data.count === undefined) return;
+
+                const pct        = data.occupancy_percent || 0;
+                const displayPct = Math.min(pct, 100);
+                const status     = data.status || 'Empty';
+                const time       = new Date().toLocaleTimeString();
+
+                document.getElementById('secCount').textContent     = data.count;
+                document.getElementById('secCountSub').textContent  = `of ${data.max_capacity} max`;
+                document.getElementById('secStatus').textContent    = status;
+                document.getElementById('secOccupancy').textContent = `${displayPct.toFixed(1)}% occupied`;
+                document.getElementById('secLocation').textContent  = data.location;
+                document.getElementById('secTimestamp').textContent = `Last update: ${data.timestamp}`;
+
+                document.getElementById('secProgPct').textContent       = displayPct.toFixed(1) + '%';
+                document.getElementById('secProgFill').style.width      = displayPct + '%';
+                document.getElementById('secProgFill').style.background = getBarColor(pct);
+                document.getElementById('secProgPct').style.color       = getBarColor(pct);
+
+                const banner = document.getElementById('alertBanner');
+
+                if (status === 'Full' && !acknowledged) {
+                    banner.className = 'alert-banner show critical';
+                    document.getElementById('alertIcon').textContent     = '🚨';
+                    document.getElementById('alertTitle').textContent    = 'CAPACITY EXCEEDED!';
+                    document.getElementById('alertSubtitle').textContent =
+                        `${data.count}/${data.max_capacity} people — Immediate action required!`;
+                    playAlarm();
+                } else if (status === 'Almost Full' && !acknowledged) {
+                    banner.className = 'alert-banner show warning';
+                    document.getElementById('alertIcon').textContent     = '⚠️';
+                    document.getElementById('alertTitle').textContent    = 'ALMOST AT CAPACITY';
+                    document.getElementById('alertSubtitle').textContent =
+                        `${data.count}/${data.max_capacity} people — Prepare to restrict entry`;
+                } else if (status !== 'Full' && status !== 'Almost Full') {
+                    banner.classList.remove('show');
+                    acknowledged = false;
+                }
+
+                if (status !== lastStatus) {
+                    const icons = {
+                        'Full':'🔴','Almost Full':'🟠',
+                        'Half Full':'🟡','Quarter Full':'🟢','Empty':'✅'
+                    };
+                    const types = {
+                        'Full':'critical','Almost Full':'warning',
+                        'Half Full':'normal','Quarter Full':'normal','Empty':'normal'
+                    };
+
+                    if (status === 'Full' || status === 'Almost Full') {
+                        alertCount++;
+                        document.getElementById('secAlertCount').textContent = alertCount;
+                    }
+
+                    addToLog(
+                        types[status] || 'normal',
+                        icons[status] || '📊',
+                        `Status changed to "${status}" — ${data.count}/${data.max_capacity} people (${displayPct.toFixed(1)}%)`,
+                        time
+                    );
+                    lastStatus = status;
+                }
+            })
+            .catch(e => console.warn('Security update failed:', e));
+    }
+
+    updateSecurity();
+    setInterval(updateSecurity, 5000);
+</script>
+</body>
+</html>

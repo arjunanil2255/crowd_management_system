@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crowd Management Dashboard</title>
+    <title>CrowdSense – Is it busy?</title>
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -114,15 +114,6 @@
 
         @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
 
-        .settings-link {
-            display: flex; align-items: center; gap: 7px;
-            background: var(--card); border: 1px solid var(--border);
-            color: var(--muted); border-radius: 11px;
-            padding: 8px 18px; font-size: .82rem; font-weight: 500;
-            text-decoration: none; transition: border-color .2s, color .2s;
-        }
-        .settings-link:hover { border-color: var(--accent); color: var(--text); }
-
         /* ── Location bar ── */
         .loc-bar {
             background: var(--card); border: 1px solid var(--border);
@@ -144,7 +135,6 @@
 
         .loc-name { font-family:'Syne',sans-serif; font-size:.98rem; font-weight:700; }
         .loc-sub  { font-size:.73rem; color:var(--muted); margin-top:1px; }
-
         .loc-time { font-size:.74rem; color:var(--muted); display:flex; align-items:center; gap:5px; }
 
         /* ── Hero card ── */
@@ -167,7 +157,6 @@
             opacity:.07; pointer-events:none; transition:opacity .5s;
         }
 
-        /* Gauge */
         .gauge-wrap { flex-shrink:0; }
 
         .gauge { position:relative; width:155px; height:155px; }
@@ -192,7 +181,6 @@
         }
         .g-sub { font-size:.68rem; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; }
 
-        /* Info */
         .hero-info { flex:1; min-width:200px; }
 
         .s-chip {
@@ -220,7 +208,6 @@
 
         .count-lbl { font-size:.83rem; color:var(--muted); margin-top:10px; }
 
-        /* Rec strip */
         .rec {
             display:flex; align-items:center; gap:10px;
             margin-top:22px; padding:14px 16px; border-radius:12px;
@@ -281,7 +268,6 @@
             border-radius:var(--radius); padding:22px;
             display:flex; flex-direction:column; gap:8px;
             transition: border-color .2s, transform .2s;
-            cursor:default;
         }
 
         .s-card:hover { border-color:var(--accent); transform:translateY(-3px); }
@@ -308,7 +294,6 @@
             to   { opacity:1; transform:translateY(0); }
         }
 
-        /* ── Theme helpers ── */
         .t-green  { --s-color:var(--green);  --s-bg:var(--green-bg);  --s-border:var(--green-border); }
         .t-yellow { --s-color:var(--yellow); --s-bg:var(--yellow-bg); --s-border:var(--yellow-border); }
         .t-orange { --s-color:var(--orange); --s-bg:var(--orange-bg); --s-border:var(--orange-border); }
@@ -325,7 +310,7 @@
 <body>
 <div class="wrapper">
 
-    <!-- Header -->
+    <!-- Header — no Settings button -->
     <header>
         <div class="brand">
             <div class="brand-icon">🎥</div>
@@ -336,9 +321,13 @@
         </div>
         <div class="h-actions">
             <div class="live-pill"><span class="dot"></span>LIVE</div>
-            <a href="/admin/users" class="settings-link">👥 Users</a>
-            <a href="/settings" class="settings-link">⚙️ Settings</a>
-            <a href="/logout" class="settings-link" style="color:#ef4444; border-color:rgba(239,68,68,.3);">🚪 Logout</a>
+            <a href="/logout" style="
+                display:flex; align-items:center; gap:7px;
+                background:var(--card); border:1px solid rgba(239,68,68,.3);
+                color:#ef4444; border-radius:11px;
+                padding:8px 18px; font-size:.82rem; font-weight:500;
+                text-decoration:none; transition:border-color .2s, background .2s;
+            ">🚪 Logout</a>
         </div>
     </header>
 
@@ -360,7 +349,7 @@
             <div class="gauge">
                 <svg width="155" height="155" viewBox="0 0 155 155">
                     <circle class="g-track" cx="77.5" cy="77.5" r="63"/>
-                    <circle class="g-fill"  id="gaugeFill" cx="77.5" cy="77.5" r="63"
+                    <circle class="g-fill" id="gaugeFill" cx="77.5" cy="77.5" r="63"
                             stroke-dasharray="395.84"
                             stroke-dashoffset="395.84"/>
                 </svg>
@@ -445,7 +434,7 @@
 </div>
 
 <script>
-    const CIRC = 2 * Math.PI * 63; // ~395.84
+    const CIRC = 2 * Math.PI * 63;
 
     function getThemeInfo(status) {
         const map = {
@@ -465,13 +454,13 @@
     }
 
     function setGauge(pct) {
-    const clamped = Math.min(pct, 100); // ✅ Cap at 100%
-    const offset  = CIRC - (CIRC * clamped) / 100;
-    document.getElementById('gaugeFill').style.strokeDashoffset = offset;
-    document.getElementById('gaugePct').textContent  = clamped.toFixed(1) + '%'; // ✅ Fixed
-    document.getElementById('progPct').textContent   = clamped.toFixed(1) + '%'; // ✅ Fixed
-    document.getElementById('progFill').style.width  = clamped + '%';
-}
+        const clamped = Math.min(pct, 100);
+        const offset  = CIRC - (CIRC * clamped) / 100;
+        document.getElementById('gaugeFill').style.strokeDashoffset = offset;
+        document.getElementById('gaugePct').textContent  = pct.toFixed(1) + '%';
+        document.getElementById('progPct').textContent   = pct.toFixed(1) + '%';
+        document.getElementById('progFill').style.width  = clamped + '%';
+    }
 
     function updateLatest() {
         fetch('/api/latest')

@@ -1,39 +1,53 @@
+import os
+os.environ["CUDA_VISIBLE_DEVICES"] = ""  # ✅ Completely hide GPU from PyTorch
+os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
+
 import cv2
 from ultralytics import YOLO
 from deep_sort_realtime.deepsort_tracker import DeepSort
 import json
 from datetime import datetime
 import time
-import os
+
+print("=" * 60)
+print("🔥 DEVICE CHECK")
+print("Running on CPU (stable mode)")
+print("=" * 60)
 
 # Load YOLOv8 model
 print("Loading YOLO model...")
 model = YOLO('yolov8n.pt')
+model.to("cpu")
+print("✅ Model running on: CPU")
 
-# Initialize DeepSORT tracker
+# ✅ DeepSORT with mobilenet on CPU
 tracker = DeepSort(
     max_age=30,
-    n_init=5,        # needs 5 frames to confirm (was 3)
-    max_iou_distance=0.7
+    n_init=5,
+    max_iou_distance=0.7,
+    embedder="mobilenet",
+    embedder_gpu=False,   # ✅ Force CPU for embedder
+    half=False
 )
-
 print("✅ DeepSORT tracker initialized!")
+
+# ── Config ───────────────────────────────────────────────────────
+CONFIG_FILE = 'config.json'
+SAVE_INTERVAL = 5
+last_save_time = time.time()
+last_config_check = time.time()
+
 
 def get_camera_source():
     try:
         with open('config.json', 'r') as f:
             config = json.load(f)
             source = config.get('camera_source', '0')
-            if source.isdigit():
+            if str(source).isdigit():
                 return int(source)
             return source
     except:
         return 0
-
-CONFIG_FILE = 'config.json'
-SAVE_INTERVAL = 5
-last_save_time = time.time()
-last_config_check = time.time()
 
 
 def load_config():
@@ -55,21 +69,25 @@ def load_config():
         return {"location_name": "Canteen", "max_capacity": 20, "camera_source": "0"}
 
 
-# Connect to camera
+# ── Connect Camera ───────────────────────────────────────────────
 camera_source = get_camera_source()
 cap = cv2.VideoCapture(camera_source)
+cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
 cap.set(3, 640)
 cap.set(4, 480)
 cap.set(10, 120)
 
-# Load initial config
+# ── Load Config ──────────────────────────────────────────────────
 config = load_config()
 LOCATION_NAME = config.get("location_name", "Canteen")
 MAX_CAPACITY = config.get("max_capacity", 20)
 
-# Track unique people (for entry/exit counting)
+# ── Tracking Variables ───────────────────────────────────────────
 tracked_ids = set()
 total_entered = 0
+frame_count = 0
+tracks = []
+person_count = 0
 
 print("=" * 60)
 print(f"Starting crowd monitoring for: {LOCATION_NAME}")
@@ -81,13 +99,14 @@ print("=" * 60)
 
 while True:
 
-    # Auto-reconnect if camera source changed
+    # ── Auto-reconnect if camera changed ────────────────────────
     new_source = get_camera_source()
     if new_source != camera_source:
         print(f"📷 Camera source changed to: {new_source}")
         cap.release()
         camera_source = new_source
         cap = cv2.VideoCapture(camera_source)
+        cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
         cap.set(3, 640)
         cap.set(4, 480)
         cap.set(10, 120)
@@ -99,11 +118,13 @@ while True:
         time.sleep(2)
         cap.release()
         cap = cv2.VideoCapture(camera_source)
+        cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
         continue
 
+    frame_count += 1
     current_time = time.time()
 
-    # Reload config every 10 seconds
+    # ── Reload Config every 10 seconds ──────────────────────────
     if current_time - last_config_check >= 10:
         config = load_config()
         LOCATION_NAME = config.get("location_name", LOCATION_NAME)
@@ -111,60 +132,65 @@ while True:
         last_config_check = current_time
         print(f"⚙️  Config reloaded: {LOCATION_NAME}, Capacity: {MAX_CAPACITY}")
 
-    # ── YOLO Detection ──────────────────────────────────────────
-    results = model(frame, verbose=False, classes=[0], conf=0.6)
+    # ── YOLO Detection every 2nd frame ──────────────────────────
+    if frame_count % 2 == 1:
+        results = model(
+            frame,
+            verbose=False,
+            classes=[0],
+            conf=0.35,
+            imgsz=640,
+            device="cpu"
+        )
 
-    # Build detections list for DeepSORT
-    # Format: ([x1, y1, w, h], confidence, class)
-    detections = []
-    for result in results:
-        for box in result.boxes:
-            x1, y1, x2, y2 = map(int, box.xyxy[0])
-            w = x2 - x1
-            h = y2 - y1
-            conf = float(box.conf[0])
+        detections = []
+        for result in results:
+            for box in result.boxes:
+                x1, y1, x2, y2 = map(int, box.xyxy[0])
+                w = x2 - x1
+                h = y2 - y1
+                conf = float(box.conf[0])
 
-            # Filter small boxes (hands, noise)
-            aspect_ratio = h / w if w > 0 else 0
-            if h > 50 and w > 30 and conf > 0.5:
-                detections.append(([x1, y1, w, h], conf, 0))
+                if h > 20 and w > 15 and conf > 0.35:
+                    detections.append(([x1, y1, w, h], conf, 0))
 
-    # ── DeepSORT Tracking ───────────────────────────────────────
-    tracks = tracker.update_tracks(detections, frame=frame)
+        # ── DeepSORT Tracking ────────────────────────────────────
+        try:
+            tracks = tracker.update_tracks(detections, frame=frame)
+        except Exception as e:
+            print(f"Tracker error: {e}")
+            tracks = []
 
-    # Count only confirmed active tracks
-    person_count = 0
+        # Count confirmed tracks
+        person_count = 0
+        for track in tracks:
+            if not track.is_confirmed():
+                continue
+            person_count += 1
+            if track.track_id not in tracked_ids:
+                tracked_ids.add(track.track_id)
+                total_entered += 1
+
+    # ── Draw Boxes on Every Frame ────────────────────────────────
     for track in tracks:
         if not track.is_confirmed():
             continue
 
-        track_id = track.track_id
-        person_count += 1
+        track_id = int(track.track_id)
+        x1, y1, x2, y2 = map(int, track.to_ltrb())
 
-        # Count unique people who entered
-        if track_id not in tracked_ids:
-            tracked_ids.add(track_id)
-            total_entered += 1
-
-        # Get bounding box
-        ltrb = track.to_ltrb()
-        x1, y1, x2, y2 = map(int, ltrb)
-
-        # Draw bounding box with unique color per ID
-        color_index = int(track_id) % 5
+        color_index = track_id % 5
         colors = [
-            (0, 255, 0),    # Green
-            (255, 165, 0),  # Orange
-            (0, 200, 255),  # Cyan
-            (255, 0, 255),  # Magenta
-            (0, 255, 128),  # Spring green
+            (0, 255, 0),
+            (255, 165, 0),
+            (0, 200, 255),
+            (255, 0, 255),
+            (0, 255, 128),
         ]
         color = colors[color_index]
 
-        # Draw box
         cv2.rectangle(frame, (x1, y1), (x2, y2), color, 2)
 
-        # Draw ID label with background
         label = f"ID:{track_id}"
         label_size = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.6, 2)[0]
         cv2.rectangle(frame,
@@ -174,7 +200,7 @@ while True:
         cv2.putText(frame, label, (x1 + 2, y1 - 5),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 0), 2)
 
-    # ── Occupancy Calculation ───────────────────────────────────
+    # ── Occupancy ────────────────────────────────────────────────
     occupancy_percent = (person_count / MAX_CAPACITY) * 100 if MAX_CAPACITY > 0 else 0
 
     if occupancy_percent >= 100:
@@ -193,24 +219,17 @@ while True:
         status = "Empty"
         color = (0, 255, 0)
 
-    # ── Display Info on Frame ───────────────────────────────────
+    # ── Display Info on Frame ────────────────────────────────────
     cv2.putText(frame, f"People: {person_count}/{MAX_CAPACITY} - {status}",
                 (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.8, color, 2)
-
     cv2.putText(frame, f"Occupancy: {occupancy_percent:.1f}%",
                 (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.7, color, 2)
-
     cv2.putText(frame, f"Location: {LOCATION_NAME}",
                 (10, 90), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2)
-
     cv2.putText(frame, f"Total Entered: {total_entered}",
                 (10, 120), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (200, 200, 255), 2)
 
-    cam_label = f"Camera: {'Webcam' if camera_source == 0 else str(camera_source)[:30]}"
-    cv2.putText(frame, cam_label, (10, 150),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (200, 200, 200), 1)
-
-    # ── Capacity Bar ────────────────────────────────────────────
+    # ── Capacity Bar ─────────────────────────────────────────────
     bar_width = 600
     bar_height = 30
     bar_x = 20
@@ -235,7 +254,7 @@ while True:
     cv2.rectangle(frame, (bar_x, bar_y),
                   (bar_x + bar_width, bar_y + bar_height), (0, 0, 0), 2)
 
-    # ── Save Data ───────────────────────────────────────────────
+    # ── Save Data ────────────────────────────────────────────────
     if current_time - last_save_time >= SAVE_INTERVAL:
         data = {
             "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),

@@ -1,13 +1,6 @@
 {
     "location_name": "Canteen",
-    "max_capacity": 1000,
+    "max_capacity": 1,
     "camera_source": "0",
-    "cameras": [
-        {
-            "id": 1,
-            "name": "1",
-            "url": "0",
-            "enabled": true
-        }
-    ]
+    "cameras": []
 }
